@@ -14,7 +14,7 @@ To install this script, you need to have the [Tampermonkey](https://www.tampermo
 
 Just click the link below! Tampermonkey should automatically detect the script and guide you through the installation process.
 
-👉 https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/main/IGCD%20Enhancements.js 👈
+👉 https://github.com/Klumb3r/IGCD-Enhancements/raw/refs/heads/main/IGCD-Enhancements.user.js 👈
 
 Follow the prompts in Tampermonkey to complete the installation.
 
@@ -28,7 +28,7 @@ If the direct installation doesn't work for you, try this method:
 4.  Find the **"Import from URL"** section.
 5.  In the "URL" field, paste the following link:
     ```
-    https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/main/IGCD%20Enhancements.js
+    https://github.com/Klumb3r/IGCD-Enhancements/raw/refs/heads/main/IGCD-Enhancements.user.js
     ```
 6.  Click the **"Import"** button.
 7.  Tampermonkey will then show you the installation page. Click **"Install"** to finish.

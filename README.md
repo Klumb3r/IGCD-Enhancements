@@ -8,11 +8,28 @@ This user script for [Tampermonkey](https://www.tampermonkey.net/) enhances the 
 
 ## Installation
 
-To install this script, you need to have the [Tampermonkey](https://www.tampermonkey.net/) browser extension installed. Once you have Tampermonkey, you can install the script by clicking on the following link:
+To install this script, you need to have the [Tampermonkey](https://www.tampermonkey.net/) browser extension installed.
+
+**Step 1: Install directly from the link**
+
+Click on the following link:
 
 [https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/refs/heads/main/IGCD%20Enhancements.js](https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/refs/heads/main/IGCD%20Enhancements.js)
 
-After clicking the link, Tampermonkey will prompt you to install the script. Click "Install" to proceed.
+Tampermonkey should automatically detect the script and prompt you to install it. Click "Install" to proceed.
+
+**Step 2: If direct installation doesn't work, try importing via the Tampermonkey Dashboard**
+
+1.  Click on the Tampermonkey icon in your browser's toolbar.
+2.  Go to the "Dashboard".
+3.  In the Tampermonkey Dashboard, navigate to the "Utilities" tab.
+4.  Look for the "Import from URL" section.
+5.  Copy and paste the following URL into the "URL" field:
+    ```
+    [https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/refs/heads/main/IGCD%20Enhancements.js](https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/refs/heads/main/IGCD%20Enhancements.js)
+    ```
+6.  Click the "Import" button.
+7.  Tampermonkey should then display the installation page. Click "Install" to proceed.
 
 ## Usage
 

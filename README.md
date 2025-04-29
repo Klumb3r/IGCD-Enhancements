@@ -10,26 +10,28 @@ This user script for [Tampermonkey](https://www.tampermonkey.net/) enhances the 
 
 To install this script, you need to have the [Tampermonkey](https://www.tampermonkey.net/) browser extension installed.
 
-**Step 1: Install directly from the link**
+✨ **Step 1: Easy Direct Installation** ✨
 
-Click on the following link:
+Just click the link below! Tampermonkey should automatically detect the script and guide you through the installation process.
 
-[https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/refs/heads/main/IGCD%20Enhancements.js](https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/refs/heads/main/IGCD%20Enhancements.js)
+👉 https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/main/IGCD%20Enhancements.js 👈
 
-Tampermonkey should automatically detect the script and prompt you to install it. Click "Install" to proceed.
+Follow the prompts in Tampermonkey to complete the installation.
 
-**Step 2: If direct installation doesn't work, try importing via the Tampermonkey Dashboard**
+🛠️ **Step 2: Alternative Import via Tampermonkey Dashboard** 🛠️
+
+If the direct installation doesn't work for you, try this method:
 
 1.  Click on the Tampermonkey icon in your browser's toolbar.
-2.  Go to the "Dashboard".
-3.  In the Tampermonkey Dashboard, navigate to the "Utilities" tab.
-4.  Look for the "Import from URL" section.
-5.  Copy and paste the following URL into the "URL" field:
+2.  Go to the **"Dashboard"**.
+3.  Navigate to the **"Utilities"** tab.
+4.  Find the **"Import from URL"** section.
+5.  In the "URL" field, paste the following link:
     ```
-    https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/refs/heads/main/IGCD%20Enhancements.js
+    https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/main/IGCD%20Enhancements.js
     ```
-6.  Click the "Import" button.
-7.  Tampermonkey should then display the installation page. Click "Install" to proceed.
+6.  Click the **"Import"** button.
+7.  Tampermonkey will then show you the installation page. Click **"Install"** to finish.
 
 ## Usage
 

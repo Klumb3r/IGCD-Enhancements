@@ -1,6 +1,6 @@
 # IGCD Enhancements UserScript
 
-This user script for Tampermonkey enhances the experience on the Internet Game Cars Database (IGCD) website. It provides the following features:
+This user script for [Tampermonkey](https://www.tampermonkey.net/) enhances the experience on the Internet Game Cars Database (IGCD) website. It provides the following features:
 
 * **Shows Vehicle Make Logo:** Displays the logo of the vehicle's manufacturer next to the title for easier identification.
 * **Makes Title Elements Clickable:** Turns the year, make, and model in the vehicle title into clickable links for quick searches on IGCD.
@@ -8,7 +8,7 @@ This user script for Tampermonkey enhances the experience on the Internet Game C
 
 ## Installation
 
-To install this script, you need to have the Tampermonkey browser extension installed. Once you have Tampermonkey, you can install the script by clicking on the following link:
+To install this script, you need to have the [Tampermonkey](https://www.tampermonkey.net/) browser extension installed. Once you have Tampermonkey, you can install the script by clicking on the following link:
 
 [https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/refs/heads/main/IGCD%20Enhancements.js](https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/refs/heads/main/IGCD%20Enhancements.js)
 

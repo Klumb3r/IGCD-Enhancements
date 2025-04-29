@@ -56,9 +56,9 @@ Once installed, the script will automatically run on any page matching `*://*.ig
 
 ## Known Bugs
 
-* **Logo ambiguity for same name from different countries:** The script currently displays a single logo for a vehicle make, even if there are brands with the same name originating from different countries (e.g., [Puma from Brazil](https://igcd.net/marque.php?id=Puma&pays=BR) and [Puma from Italy](https://igcd.net/marque.php?id=Puma&pays=IT)).
+* For makes with the same name, but from different countries, it could display the other make's logo. (example: [Puma from Brazil](https://igcd.net/marque.php?id=Puma&pays=BR) and [Puma from Italy](https://igcd.net/marque.php?id=Puma&pays=IT)).
 * Clicking on certain logos with special characters, such as [Đuro Đaković](https://igcd.net/vehicle.php?id=245829), may result in an error. This is due to the structure of IGCD, and this script can't resolve that.
-
+* Currently, the makes 'American Bridge Co.', 'American Car Company', 'American Coal Enterprises', and 'American Ship Building Company' don't have their own logos, it will mistakenly show the logo for the 'American' make instead. Since IGCD doesn't differentiate between a make and a model in its storage, I have to scrape the information. In these cases, it only finds and returns 'American'."
 
 
 ## Author

@@ -2,9 +2,8 @@
 
 This user script for [Tampermonkey](https://www.tampermonkey.net/) enhances the experience on the Internet Game Cars Database (IGCD) website. It provides the following features:
 
-* **Shows Vehicle Make Logo:** Displays the logo of the vehicle's manufacturer next to the title for easier identification.
-* **Makes Title Elements Clickable:** Turns the year, make, and model in the vehicle title into clickable links for quick searches on IGCD.
-* **Makes Additional Info Clickable:** Transforms the text following "Surname:", "Chassis:", and "Extra info:" into clickable links for searching IGCD.
+* **Shows vehicle make logo:** Displays the logo of the vehicle's make next to the title for easier identification.
+* **Makes title elements (year, make, model) and additional info (Surname, Chassis, Extra info) clickable:** Turns these text elements into clickable links for quick searches on IGCD.
 
 ## Installation
 
@@ -36,6 +35,21 @@ If the direct installation doesn't work for you, try this method:
 ## Usage
 
 Once installed, the script will automatically run on any page matching `*://*.igcd.net/vehicle.php?id=*`. Simply navigate to a vehicle page on IGCD, and the enhancements will be visible.
+* Click on the vehicle make logo next to the title to search for that information.
+* Click on the **make** or **model** within the vehicle title to search for that information.
+* Click on the text following **Surname**, **Chassis**, or **Extra info** to search for that information.
+
+
+## Changelog
+
+**Version 1.0 - First Release**
+
+* Allows individual clicks on the logo, make, model, Surname, Chassis, and Extra info, directing users to the corresponding search page on IGCD.
+
+## Known Bugs
+
+* **Logo ambiguity for same name from different countries:** The script currently displays a single logo for a vehicle make, even if there are brands with the same name originating from different countries (e.g., [Puma from Brazil](https://igcd.net/marque.php?id=Puma&pays=BR) and [Puma from Italy](https://igcd.net/marque.php?id=Puma&pays=IT)).
+* Clicking on certain brands with special characters, such as Đuro Đaković, may result in an error due to an internal issue on the IGCD website. This script cannot resolve this problem.
 
 ## Author
 

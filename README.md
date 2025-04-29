@@ -26,7 +26,7 @@ Tampermonkey should automatically detect the script and prompt you to install it
 4.  Look for the "Import from URL" section.
 5.  Copy and paste the following URL into the "URL" field:
     ```
-    [https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/refs/heads/main/IGCD%20Enhancements.js](https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/refs/heads/main/IGCD%20Enhancements.js)
+    https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/refs/heads/main/IGCD%20Enhancements.js
     ```
 6.  Click the "Import" button.
 7.  Tampermonkey should then display the installation page. Click "Install" to proceed.

@@ -48,18 +48,32 @@ Once installed, the script will automatically run on any page matching `*://*.ig
 
 ## Changelog
 
-**Version 1.0 - First Release**
+### Version 1.1 - 03/05/2025
 
-* Allows individual clicks on the logo, make, model, Surname, Chassis, and Extra info, directing users to the corresponding search page on IGCD.
+* **Clickable logo**: clicking the logo directs to the page with all models of that make.
+* **Clickable Origin**: clicking the origin directs to the page with all makes from that country.
+* **Added exceptions:**
+    * Specific exception for **A:Level**, displaying its correct logo.
+    * Specific exception for **Puma (Italy)**, displaying its correct logo.
+    * Specific exception for **Đuro Đaković**, redirecting correctly.
+    * Specific exception for **Konštrukta Trenčín**, redirecting correctly.
+
+### Version 1.0 - 29/05/2025
+
+* **Added logo:** the logo is displayed on the page.
+* **Clickable links:** the following sections are now clickable and take you to searches:
+    * Make (if the make doesn't have a logo, it doesn't differentiate between make and model).
+    * Model (if the make doesn't have a logo, it doesn't differentiate between make and model).
+    * Surname.
+    * Extra info.
+    * Chassis.
 
 
 
 ## Known Bugs
 
-* For makes with the same name, but from different countries, it could display the other make's logo. (example: [Puma from Brazil](https://igcd.net/marque.php?id=Puma&pays=BR) and [Puma from Italy](https://igcd.net/marque.php?id=Puma&pays=IT)).
-* Clicking on certain logos with special characters, such as [Đuro Đaković](https://igcd.net/vehicle.php?id=245829), may result in an error. This is due to the structure of IGCD, and this script can't resolve that.
+* Clicking on certain makes with special characters, such as [Đuro Đaković](https://igcd.net/vehicle.php?id=245829), may result in an error when searching. This is due to the structure of IGCD, and this script can't resolve that.
 * Currently, the makes "American Bridge Co.", "American Car Company", "American Coal Enterprises", and "American Ship Building Company" don't have their own logos, the script mistakenly displays the logo for the "American" make instead. Since IGCD doesn't distinguish between make and model in its storage system, I have to scrape the page and try to match any existing logos. In these cases, it only finds and returns "American". The same issue occurs with "Derby Works" and "Derby".
-* The logo of the Russian brand [A:Level](https://igcd.net/marque.php?id=A:Level&pays=RU) exists, but without the colon [(:)](https://igcd.net/logos/ALevel.png), the script is unable to find it. The script can be modified; it will be fixed in the future.
 
 
 ## Author

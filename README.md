@@ -48,6 +48,10 @@ Once installed, the script will automatically run on any page matching `*://*.ig
 
 ## Changelog
 
+### Version 1.2 - 16/08/2025
+
+* Support for IGCD V4.
+
 ### Version 1.1 - 03/05/2025
 
 * **Clickable logo**: clicking the logo directs to the page with all models of that make.

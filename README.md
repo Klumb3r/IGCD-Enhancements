@@ -77,7 +77,7 @@ Once installed, the script will automatically run on any page matching `*://*.ig
 ## Known Bugs
 
 * Clicking on certain makes with special characters, such as [Đuro Đaković](https://igcd.net/vehicle.php?id=245829), may result in an error when searching. This is due to the structure of IGCD, and this script can't resolve that.
-* Currently, the makes "American Bridge Co.", "American Car Company", "American Coal Enterprises", and "American Ship Building Company" don't have their own logos, the script mistakenly displays the logo for the "American" make instead. Since IGCD doesn't distinguish between make and model in its storage system, I have to scrape the page and try to match any existing logos. In these cases, it only finds and returns "American". The same issue occurs with "Derby Works" and "Derby", and "Bell Boeing" with "Bell".
+* Currently, the makes "American Bridge Co.", "American Car Company", "American Coal Enterprises", and "American Ship Building Company" don't have their own logos, the script mistakenly displays the logo for the "American" make instead. Since IGCD doesn't distinguish between make and model in its storage system, I have to scrape the page and try to match any existing logos. In these cases, it only finds and returns "American". The same issue occurs with "Derby Works" with "Derby", "Bell Boeing" with "Bell", "Lake Shore" with "Lake", "Bristol Boats" with "Bristol", etc.
 * For some reason, there is a file named [Devel Sixteen.png](https://igcd.net/logos/Devel%20Sixteen.png) (it should be Devel.png). This causes the logo to display incorrectly on Devel Sixteen vehicles.
 
 

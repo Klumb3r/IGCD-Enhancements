@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         IGCD Enhancements
-// @version      1.1
+// @version      1.2
 // @author       Klumb3r
 // @description  Shows logo, and several links are now clickable
 // @match        *://*.igcd.net/vehicle.php?id=*
@@ -80,9 +80,9 @@
 
     // Asynchronous function to process the vehicle title, find the make logo, and create links
     const processVehicleTitle = async () => {
-        const targetH1 = document.querySelector('h1');
-        if (targetH1) {
-            const originalText = targetH1.textContent.trim();
+        const targeth5 = document.querySelector('h5');
+        if (targetH5) {
+            const originalText = targetH5.textContent.trim();
             const yearMatch = originalText.match(/^(\d{4})\s+(.*)/);
             const year = yearMatch ? yearMatch[1] : '';
             const makeAndModel = yearMatch ? yearMatch[2] : originalText;
@@ -143,7 +143,8 @@
             Object.assign(container.style, {
                 display: 'flex',
                 alignItems: 'center',
-                gap: '16px'
+                paddingLeft: '30px',
+                gap: '30px'
             });
 
             // Create a container for the title text (year, make, model)
@@ -238,8 +239,8 @@
             }
 
             container.appendChild(textContainer);
-            targetH1.innerHTML = '';
-            targetH1.appendChild(container);
+            targetH5.innerHTML = '';
+            targetH5.appendChild(container);
         }
     };
 
@@ -363,3 +364,4 @@
         findAndLogCountry();
     });
 })();
+

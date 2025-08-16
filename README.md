@@ -62,7 +62,7 @@ Once installed, the script will automatically run on any page matching `*://*.ig
     * Specific exception for **Đuro Đaković**, redirecting correctly.
     * Specific exception for **Konštrukta Trenčín**, redirecting correctly.
 
-### Version 1.0 - 29/05/2025
+### Version 1.0 - 29/04/2025
 
 * **Added logo:** the logo is displayed on the page.
 * **Clickable links:** the following sections are now clickable and take you to searches:

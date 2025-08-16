@@ -80,7 +80,7 @@
 
     // Asynchronous function to process the vehicle title, find the make logo, and create links
     const processVehicleTitle = async () => {
-        const targeth5 = document.querySelector('h5');
+        const targetH5 = document.querySelector('h5');
         if (targetH5) {
             const originalText = targetH5.textContent.trim();
             const yearMatch = originalText.match(/^(\d{4})\s+(.*)/);
@@ -364,4 +364,3 @@
         findAndLogCountry();
     });
 })();
-

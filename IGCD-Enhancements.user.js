@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         IGCD Enhancements
-// @version      1.2
+// @version      1.3
 // @author       Klumb3r
 // @description  Shows logo, and several links are now clickable
 // @match        *://*.igcd.net/vehicle.php?id=*
@@ -10,22 +10,17 @@
 (function() {
     'use strict';
 
-    // Function to remove accents and specific characters from a string
+    // Remove accents and specific characters from a string
     const removeAccents = (text) => text.normalize('NFD').replace(/[\u0300-\u036fĐđĆć]/g, (match) => ({ 'Đ': 'D', 'đ': 'd', 'Ć': 'C', 'ć': 'c' }[match] || ''));
 
-    // Function to normalize text for search URLs (remove accents and replace spaces with hyphens)
+    // Normalize text for search URLs (remove accents and replace spaces with hyphens)
     const normalizeForSearch = (text) => removeAccents(text).replace(/\s+/g, '-');
 
-    // Asynchronous function to check if an image URL exists by making a HEAD request
+    // Check if an image URL exists by making a HEAD request
     const checkImage = async (make, countryCode = null) => {
         const logoBaseUrl = window.location.protocol + '//' + window.location.hostname;
         const makeWithHyphen = make.replace('/', '-'); // Replace slash with hyphen for logo search
-
         const tryUrls = [];
-
-        if (make === 'Puma' && countryCode === 'IT') { // Exception for Puma (Italy)
-            tryUrls.push(`${logoBaseUrl}/logos/Pumait.png`);
-        }
 
         tryUrls.push(
             `${logoBaseUrl}/logos/${encodeURIComponent(make)}.png`, // Try the make name as is in the URL
@@ -34,7 +29,7 @@
             `${logoBaseUrl}/logos/${encodeURIComponent(removeAccents(makeWithHyphen))}.png` // Try with hyphen and without accents
         );
 
-        for (const url of tryUrls) {
+        for(const url of tryUrls) {
             const exists = await new Promise((resolve) => {
                 GM_xmlhttpRequest({
                     method: 'HEAD',
@@ -43,12 +38,12 @@
                     onerror: () => resolve(false)
                 });
             });
-            if (exists) return url;
+            if(exists) return url;
         }
         return null;
     };
 
-    // Function to create a simple styled link element
+    // Create a simple styled link element
     const createStyledLink = (text, url) => {
         const linkElement = document.createElement('a');
         linkElement.href = url;
@@ -62,7 +57,7 @@
         return linkElement;
     };
 
-    // Function to create a link element for titles with hover underline effect
+    // Create a link element for titles with hover underline effect
     const createTitleLink = (text, url) => {
         const linkElement = document.createElement('a');
         linkElement.href = url;
@@ -73,232 +68,275 @@
             fontWeight: 'normal',
             textDecoration: 'none' // No default underline
         });
-        linkElement.addEventListener('mouseover', () => linkElement.style.textDecoration = 'underline');
-        linkElement.addEventListener('mouseout', () => linkElement.style.textDecoration = 'none');
+        linkElement.onmouseover = () => { linkElement.style.textDecoration = 'underline'; };
+        linkElement.onmouseout = () => { linkElement.style.textDecoration = 'none'; };
         return linkElement;
     };
 
-    // Asynchronous function to process the vehicle title, find the make logo, and create links
+    // Exceptions for specific makes
+    const exceptions = (candidate, originCountryCode) => {
+        let logoUrl = '';
+        let linkUrl = '';
+        let textLinkUrl = '';
+        switch(candidate) {
+            case 'A:Level':
+                logoUrl = 'https://igcd.net/logos/2171.png';
+                linkUrl = 'https://igcd.net/marque.php?id=A%3ALevel&pays=RU';
+                break;
+            case 'Puma':
+                if(originCountryCode === 'IT') {
+                    logoUrl = 'https://igcd.net/logos/Pumait.png';
+                }
+                linkUrl = `https://igcd.net/marque.php?id=${encodeURIComponent(candidate)}`;
+                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
+                break;
+            case 'Şantierul Naval 2 Mai':
+                linkUrl = `https://igcd.net/marque.php?id=%26%23350%3Bantierul+Naval+2+Mai`;
+                textLinkUrl = 'https://igcd.net/search.php?title=antierul+Naval+2+Mai&type=vehicules';
+                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
+                break;
+            case 'Đuro Đaković':
+                logoUrl = 'https://igcd.net/logos/2146.png';
+                linkUrl = `https://igcd.net/marque.php?id=%26%23272%3Buro+%26%23272%3Bakovi%26%23263%3B`;
+                textLinkUrl = 'https://igcd.net/search.php?title=akovi&type=vehicules';
+                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
+                break;
+            case 'Konštrukta Trenčín':
+                logoUrl = 'https://igcd.net/logos/2382.png';
+                linkUrl = `https://igcd.net/marque.php?id=Kon%C5%A1trukta+Tren%26%23269%3B%C3%ADn`;
+                textLinkUrl = 'https://igcd.net/search.php?title=Kon%C5%A1trukta&type=vehicules';
+                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
+                break;
+            case 'DMC':
+                logoUrl = 'https://igcd.net/logos/3917.png';
+                linkUrl = 'https://igcd.net/marque.php?id=DMC';
+                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
+                break;
+            case 'DeLorean':
+                logoUrl = 'https://igcd.net/logos/3920.png';
+                linkUrl = 'https://igcd.net/marque.php?id=DeLorean';
+                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
+                break;
+            case 'Rába':
+                logoUrl = 'https://igcd.net/logos/799.png';
+                linkUrl = 'https://igcd.net/marque.php?id=Rába';
+                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
+                break;
+            case 'Končar':
+                logoUrl = 'https://igcd.net/logos/3178.png';
+                linkUrl = 'https://igcd.net/marque.php?id=Kon%26%23269%3Bar';
+                textLinkUrl = 'https://igcd.net/search.php?title=Kon%26%23269%3Bar&type=vehicules';
+                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
+                break;
+            case 'Skipasýn-Icelandic':
+                logoUrl = 'https://igcd.net/logos/3763.png';
+                linkUrl = 'https://igcd.net/marque.php?id=Skipasýn-Icelandic';
+                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
+                break;
+            case 'Crosslé':
+                logoUrl = 'https://igcd.net/logos/2260.png';
+                linkUrl = 'https://igcd.net/marque.php?id=Crosslé';
+                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
+                break;
+            case 'Bolloré':
+                logoUrl = 'https://igcd.net/logos/2334.png';
+                linkUrl = 'https://igcd.net/marque.php?id=Bolloré';
+                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
+                break;
+            case 'Clément-Bayard':
+                logoUrl = 'https://igcd.net/logos/1949.png';
+                linkUrl = 'https://igcd.net/marque.php?id=Clément-Bayard';
+                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
+                break;
+        }
+        return {logoUrl, linkUrl, textLinkUrl};
+    };
+
+    // Process vehicle title
     const processVehicleTitle = async () => {
         const targetH5 = document.querySelector('h5');
-        if (targetH5) {
-            const originalText = targetH5.textContent.trim();
-            const yearMatch = originalText.match(/^(\d{4})\s+(.*)/);
-            const year = yearMatch ? yearMatch[1] : '';
-            const makeAndModel = yearMatch ? yearMatch[2] : originalText;
-            const words = makeAndModel.split(' ');
+        if(!targetH5) return;
 
-            let foundMake = '';
-            let foundModel = '';
-            let makeLogoUrl = '';
-            let originCountryCode = null;
+        let originalText = targetH5.textContent.trim().replace(/\bLand-Rover\b/g, "Land Rover");
+        const yearMatch = originalText.match(/^(\d{4})\s+(.*)/);
+        const year = yearMatch ? yearMatch[1] : '';
+        const makeAndModel = yearMatch ? yearMatch[2] : originalText;
+        const words = makeAndModel.split(' ');
 
-            // Function to extract the origin country code
-            const originBoldElement = Array.from(document.querySelectorAll('b')).find(b => b.textContent.includes('Origin:'));
-            if (originBoldElement && originBoldElement.parentNode) {
-                const flagImage = originBoldElement.parentNode.querySelector('img');
-                if (flagImage && flagImage.src) {
-                    const codeMatch = flagImage.src.match(/drapeaux\/([A-Z]+)\.png/);
-                    originCountryCode = codeMatch ? codeMatch[1] : null;
-                }
+        let foundMake = '';
+        let foundModel = '';
+        let makeLogoUrl = '';
+        let logoHref = '';
+        let textLinkUrl = '';
+        let originCountryCode = null;
+
+        // Identify origin country
+        const originBoldElement = Array.from(document.querySelectorAll('b')).find(b => b.textContent.includes('Origin:'));
+        if(originBoldElement && originBoldElement.parentNode) {
+            const flagImage = originBoldElement.parentNode.querySelector('img');
+            if(flagImage && flagImage.src) {
+                const codeMatch = flagImage.src.match(/drapeaux\/([A-Z]+)\.png/);
+                originCountryCode = codeMatch ? codeMatch[1] : null;
+            }
+        }
+
+        // Iterate backwards through the words to find the longest matching make
+        for (let i = words.length; i > 0; i--) {
+            const candidate = words.slice(0, i).join(' ');
+
+            // First, check exceptions (special logos)
+            const exception = exceptions(candidate, originCountryCode);
+            if (exception.logoUrl) {
+                foundMake = candidate;
+                makeLogoUrl = exception.logoUrl;
+                logoHref = exception.linkUrl;
+                textLinkUrl = exception.textLinkUrl;
+                foundModel = words.slice(i).join(' ');
+                break;
             }
 
-            // Iterate backwards through the words to find the longest matching make
-            for (let i = words.length; i > 0; i--) {
-                const candidate = words.slice(0, i).join(' ');
-                const logoUrl = await checkImage(candidate, originCountryCode);
-                if (logoUrl) {
-                    foundMake = candidate;
-                    makeLogoUrl = logoUrl;
-                    foundModel = words.slice(i).join(' ');
-                    break;
-                } else if (candidate === 'A:Level') { // Exception for A:Level
-                    foundMake = candidate;
-                    makeLogoUrl = '';
-                    foundModel = words.slice(i).join(' ');
-                    break;
-                } else if (candidate === 'Puma') { // Exception for Puma (Italy)
-                    foundMake = candidate;
-                    makeLogoUrl = await checkImage(candidate, originCountryCode);
-                    if (!makeLogoUrl) {
-                        makeLogoUrl = ''; // Fallback if specific Puma (Italy) logo isn't found
-                    }
-                    foundModel = words.slice(i).join(' ');
-                    break;
-                } else if (candidate === 'Đuro Đaković') { // Exception for Đuro Đaković
-                    foundMake = candidate;
-                    makeLogoUrl = await checkImage(candidate);
-                    foundModel = words.slice(i).join(' ');
-                    break;
-                } else if (candidate === 'Konštrukta Trenčín') { // Exception for Konštrukta Trenčín
-                    foundMake = candidate;
-                    makeLogoUrl = await checkImage(candidate);
-                    foundModel = words.slice(i).join(' ');
-                    break;
-                }
+            // If no special logo, try normal checkImage
+            let logoUrlCheck = await checkImage(candidate, originCountryCode);
+            if (logoUrlCheck) {
+                foundMake = candidate;
+                makeLogoUrl = logoUrlCheck;
+                logoHref = `https://igcd.net/marque.php?id=${encodeURIComponent(candidate)}`;
+                if (originCountryCode) logoHref += `&pays=${originCountryCode}`;
+                foundModel = words.slice(i).join(' ');
+                break;
             }
+        }
 
-            // Create a container for the logo and the title text
-            const container = document.createElement('div');
-            Object.assign(container.style, {
-                display: 'flex',
-                alignItems: 'center',
-                paddingLeft: '30px',
-                gap: '30px'
+        // Container for the logo and the title text
+        const container = document.createElement('div');
+        Object.assign(container.style, {
+            display:'flex',
+            alignItems:'center',
+            paddingLeft:'30px',
+            gap:'30px'
+        });
+
+        // Container for the title text (year, make, model)
+        const textContainer = document.createElement('div');
+        Object.assign(textContainer.style, {
+            display:'flex',
+            flexDirection:'column',
+            alignItems:'flex-start',
+            lineHeight:'1.2'
+        });
+
+        // Add year
+        if(year){
+            const yearDiv = document.createElement('div');
+            Object.assign(yearDiv.style, {
+                fontSize:'0.6em',
+                fontWeight:'bold'
             });
+            yearDiv.textContent = year;
+            textContainer.appendChild(yearDiv);
+        }
 
-            // Create a container for the title text (year, make, model)
-            const textContainer = document.createElement('div');
-            Object.assign(textContainer.style, {
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                lineHeight: '1.2'
+        // If a logo URL is found, create an image link
+        if(makeLogoUrl){
+            const logoLink = document.createElement('a');
+            logoLink.href = logoHref;
+            const logoImg = document.createElement('img');
+            Object.assign(logoImg.style, {
+                width:'100px',
+                height:'80px',
+                objectFit:'contain'
             });
+            logoImg.src = makeLogoUrl;
+            logoLink.appendChild(logoImg);
+            container.appendChild(logoLink);
 
-            // Add the year if it exists
-            if (year) {
-                const yearDiv = document.createElement('div');
-                Object.assign(yearDiv.style, {
-                    fontSize: '0.6em',
-                    fontWeight: 'bold'
-                });
-                yearDiv.textContent = year;
-                textContainer.appendChild(yearDiv);
-            }
+            // Use textLinkUrl from exceptions
+            let makeLinkUrl = textLinkUrl
+            ? textLinkUrl
+            : `https://igcd.net/search.php?title=${normalizeForSearch(foundMake)}&type=vehicules`;
+            textContainer.appendChild(createTitleLink(foundMake, makeLinkUrl));
 
-            // If a logo URL is found, create an image link
-            if (makeLogoUrl || foundMake === 'A:Level') {
-                const logoLink = document.createElement('a');
-                const normalizedMakeForLogo = removeAccents(foundMake);
-                let logoHref = `https://igcd.net/marque.php?id=${encodeURIComponent(normalizedMakeForLogo)}`;
-                if (originCountryCode) { // Exception for A:Level
-                    logoHref += `&pays=${originCountryCode}`;
-                }
-                if (foundMake === 'A:Level') {
-                    makeLogoUrl = 'https://igcd.net/logos/ALevel.png';
-                }
-                if (foundMake === 'Đuro Đaković') { // Exception for Đuro Đaković
-                    logoHref = `https://igcd.net/marque.php?id=%26%23272%3Buro%20%26%23272%3Bakovi%26%23263%3B`;
-                    if (originCountryCode) {
-                        logoHref += `&pays=${originCountryCode}`;
-                    }
-                }
-                if (foundMake === 'Konštrukta Trenčín') { // Exception for Konštrukta Trenčín
-                    logoHref = `https://igcd.net/marque.php?id=Kon%9Atrukta%20Tren%26%23269%3B%EDn`;
-                    if (originCountryCode) {
-                        logoHref += `&pays=${originCountryCode}`;
-                    }
-                }
-                logoLink.href = logoHref;
-                const logoImg = document.createElement('img');
-                Object.assign(logoImg.style, {
-                    width: '100px',
-                    height: '80px',
-                    objectFit: 'contain'
-                });
-                logoImg.src = makeLogoUrl;
-                logoLink.appendChild(logoImg);
-                container.appendChild(logoLink);
-
-                textContainer.appendChild(createTitleLink(foundMake, `https://igcd.net/search.php?title=${normalizeForSearch(foundMake)}&type=vehicules`));
-                if (foundModel) {
-                    const modelDiv = document.createElement('div');
-                    const modelWords = foundModel.split(' ');
-                    let accumulatedModel = '';
-                    modelWords.forEach((word, index) => {
-                        const linkText = accumulatedModel ? `${accumulatedModel} ${word}`.trim() : word;
-                        const normalizedAccumulatedModel = normalizeForSearch(linkText);
-                        const link = createTitleLink(word, `https://igcd.net/search.php?title=${normalizedAccumulatedModel}&type=vehicules`);
-                        modelDiv.appendChild(link);
-                        if (index < modelWords.length - 1) {
-                            accumulatedModel += `${word} `;
-                            const space = document.createTextNode(' ');
-                            modelDiv.appendChild(space);
-                        } else {
-                            accumulatedModel = linkText;
-                        }
-                    });
-                    textContainer.appendChild(modelDiv);
-                }
-            } else {
+            // Found make and model
+            if(foundModel){
                 const modelDiv = document.createElement('div');
-                const modelWords = makeAndModel.split(' ');
-                let accumulatedModel = '';
-                modelWords.forEach((word, index) => {
-                    const linkText = accumulatedModel ? `${accumulatedModel} ${word}`.trim() : word;
-                    const normalizedAccumulatedModel = normalizeForSearch(linkText);
-                    const link = createTitleLink(word, `https://igcd.net/search.php?title=${normalizedAccumulatedModel}&type=vehicules`);
+                let accumulated = '';
+                foundModel.split(' ').forEach((word,index)=>{
+                    const linkText = accumulated ? `${accumulated} ${word}`.trim() : word;
+                    const link = createTitleLink(word, `https://igcd.net/search.php?title=${normalizeForSearch(linkText)}&type=vehicules`);
                     modelDiv.appendChild(link);
-                    if (index < modelWords.length - 1) {
-                        accumulatedModel += `${word} `;
+                    if(index < foundModel.split(' ').length-1){
+                        accumulated += `${word} `;
                         modelDiv.appendChild(document.createTextNode(' '));
-                    }
+                    } else accumulated = linkText;
                 });
                 textContainer.appendChild(modelDiv);
             }
-
-            container.appendChild(textContainer);
-            targetH5.innerHTML = '';
-            targetH5.appendChild(container);
+        } else {
+            // No logo: word by word clickable
+            const modelDiv = document.createElement('div');
+            let accumulated = '';
+            makeAndModel.split(' ').forEach((word,index)=>{
+                const linkText = accumulated ? `${accumulated} ${word}`.trim() : word;
+                const link = createTitleLink(word, `https://igcd.net/search.php?title=${normalizeForSearch(linkText)}&type=vehicules`);
+                modelDiv.appendChild(link);
+                if(index < makeAndModel.split(' ').length-1){
+                    accumulated += `${word} `;
+                    modelDiv.appendChild(document.createTextNode(' '));
+                } else accumulated = linkText;
+            });
+            textContainer.appendChild(modelDiv);
         }
+
+        container.appendChild(textContainer);
+        targetH5.innerHTML='';
+        targetH5.appendChild(container);
     };
 
-    // Function to make 'Surname', 'Chassis', and 'Extra info' clickable
+    // Make Surname, Chassis, and Extra info clickable
     const processClickableInfo = () => {
-        const searchFields = ['Surname', 'Chassis', 'Extra info'];
+        const searchFields = ['Surname','Chassis','Extra info'];
         const linkStyleClickableInfo = {
-            color: 'inherit',
-            fontFamily: 'inherit',
-            fontSize: 'inherit',
-            textDecoration: 'none',
-            cursor: 'pointer'
+            color:'inherit',
+            fontFamily:'inherit',
+            fontSize:'inherit',
+            textDecoration:'none',
+            cursor:'pointer'
         };
-
         const allBolds = document.querySelectorAll('b');
 
-        searchFields.forEach(field => {
-            const searchText = field + ':';
-            allBolds.forEach(boldElement => {
-                if (boldElement.textContent.includes(searchText)) {
-                    let nextSibling = boldElement.nextSibling;
-
-                    if (nextSibling && nextSibling.nodeType === Node.TEXT_NODE && nextSibling.textContent.trim()) {
+        searchFields.forEach(field=>{
+            const searchText = field+':';
+            allBolds.forEach(bold=>{
+                if(bold.textContent.includes(searchText)){
+                    let nextSibling = bold.nextSibling;
+                    if(nextSibling && nextSibling.nodeType===Node.TEXT_NODE && nextSibling.textContent.trim()){
                         const targetText = nextSibling.textContent.trim();
-                        const parentElement = boldElement.parentNode;
-                        let previousSibling = boldElement;
-                        let accumulatedWord = '';
+                        const parent = bold.parentNode;
+                        let previous = bold;
+                        let accumulated = '';
                         const words = targetText.split(' ');
 
                         const spaceNode = document.createTextNode(' ');
-                        parentElement.insertBefore(spaceNode, nextSibling);
-                        previousSibling = spaceNode;
+                        parent.insertBefore(spaceNode,nextSibling);
+                        previous = spaceNode;
 
-                        words.forEach((word, index) => {
-                            const linkText = accumulatedWord ? `${accumulatedWord} ${word}`.trim() : word;
-                            const normalizedLinkText = normalizeForSearch(linkText);
-                            const searchUrl = `https://igcd.net/search.php?title=${encodeURIComponent(normalizedLinkText)}&type=vehicules`;
-                            const linkElement = document.createElement('a');
-                            linkElement.href = searchUrl;
-                            linkElement.textContent = word;
-                            Object.assign(linkElement.style, linkStyleClickableInfo);
-
-                            parentElement.insertBefore(linkElement, previousSibling.nextSibling);
-                            previousSibling = linkElement;
-
-                            if (index < words.length - 1) {
-                                accumulatedWord += `${word} `;
-                                const spaceNode = document.createTextNode(' ');
-                                parentElement.insertBefore(spaceNode, previousSibling.nextSibling);
-                                previousSibling = spaceNode;
-                            } else {
-                                accumulatedWord = linkText;
-                            }
+                        words.forEach((word,index)=>{
+                            const linkText = accumulated ? `${accumulated} ${word}`.trim() : word;
+                            const searchUrl = `https://igcd.net/search.php?title=${encodeURIComponent(normalizeForSearch(linkText))}&type=vehicules`;
+                            const link = document.createElement('a');
+                            link.href = searchUrl;
+                            link.textContent = word;
+                            Object.assign(link.style,linkStyleClickableInfo);
+                            parent.insertBefore(link,previous.nextSibling);
+                            previous = link;
+                            if(index<words.length-1){
+                                accumulated += `${word} `;
+                                const space = document.createTextNode(' ');
+                                parent.insertBefore(space,previous.nextSibling);
+                                previous = space;
+                            } else accumulated = linkText;
                         });
-
-                        if (nextSibling && nextSibling.parentNode) {
-                            nextSibling.parentNode.removeChild(nextSibling);
-                        }
+                        if(nextSibling.parentNode) nextSibling.parentNode.removeChild(nextSibling);
                     }
                 }
             });
@@ -307,60 +345,50 @@
 
     // Function to find and make the country clickable
     const findAndLogCountry = () => {
-        const originBoldElement = Array.from(document.querySelectorAll('b')).find(b => b.textContent.includes('Origin:'));
-        if (originBoldElement) {
-            let countryElement = null;
-            let countryCode = null;
-            let flagImageElement = null;
-            let nextNode = originBoldElement.nextSibling;
+        const originBold = Array.from(document.querySelectorAll('b')).find(b=>b.textContent.includes('Origin:'));
+        if(!originBold) return;
+        let countryElem=null, countryCode=null, flagImage=null, nextNode=originBold.nextSibling;
 
-            while (nextNode) {
-                if (nextNode && nextNode.nodeType === Node.ELEMENT_NODE && nextNode.tagName === 'IMG') {
-                    flagImageElement = nextNode;
-                    const codeMatch = flagImageElement.src.match(/drapeaux\/([A-Z]+)\.png/);
-                    if (codeMatch) {
-                        countryCode = codeMatch ? codeMatch[1] : null;
-                    }
-                    if (flagImageElement.nextSibling && flagImageElement.nextSibling.nodeType === Node.TEXT_NODE && flagImageElement.nextSibling.textContent.trim()) {
-                        countryElement = flagImageElement.nextSibling;
-                        break;
-                    }
-                } else if (nextNode && nextNode.nodeType === Node.TEXT_NODE && nextNode.textContent.trim()) {
-                    countryElement = nextNode;
-                    break;
+        while(nextNode){
+            if(nextNode.nodeType===Node.ELEMENT_NODE && nextNode.tagName==='IMG'){
+                flagImage=nextNode;
+                const codeMatch=flagImage.src.match(/drapeaux\/([A-Z]+)\.png/);
+                if(codeMatch) countryCode=codeMatch[1];
+                if(flagImage.nextSibling && flagImage.nextSibling.nodeType===Node.TEXT_NODE && flagImage.nextSibling.textContent.trim()){
+                    countryElem=flagImage.nextSibling; break;
                 }
-                nextNode = nextNode.nextSibling;
+            } else if(nextNode.nodeType===Node.TEXT_NODE && nextNode.textContent.trim()){
+                countryElem=nextNode; break;
             }
+            nextNode=nextNode.nextSibling;
+        }
 
-            if (countryElement && countryCode) {
-                const countryText = countryElement.textContent.trim();
-                const linkUrl = `https://igcd.net/marques.php?pays=${countryCode}`;
-                const linkElement = document.createElement('a');
-                linkElement.href = linkUrl;
-                linkElement.textContent = countryText;
-                Object.assign(linkElement.style, { color: 'inherit', fontFamily: 'inherit', fontSize: 'inherit', textDecoration: 'none', cursor: 'pointer' });
+        if(countryElem && countryCode){
+            const countryText = countryElem.textContent.trim();
+            const linkUrl = `https://igcd.net/marques.php?pays=${countryCode}`;
+            const link = document.createElement('a');
+            link.href = linkUrl;
+            link.textContent = countryText;
+            Object.assign(link.style,{color:'inherit',fontFamily:'inherit',fontSize:'inherit',textDecoration:'none',cursor:'pointer'});
 
-                // Insert space before the flag image
-                const initialSpace = document.createTextNode(' ');
-                originBoldElement.parentNode.insertBefore(initialSpace, originBoldElement.nextSibling);
+            // Insert space before the flag image
+            const initialSpace = document.createTextNode(' ');
+            originBold.parentNode.insertBefore(initialSpace,originBold.nextSibling);
 
-                if (flagImageElement) {
-                    originBoldElement.parentNode.insertBefore(flagImageElement, initialSpace.nextSibling);
-                    const spaceAfterFlag = document.createTextNode(' ');
-                    originBoldElement.parentNode.insertBefore(spaceAfterFlag, flagImageElement.nextSibling);
-                    originBoldElement.parentNode.insertBefore(linkElement, spaceAfterFlag.nextSibling);
-                    originBoldElement.parentNode.removeChild(countryElement);
-                } else {
-                    originBoldElement.parentNode.insertBefore(linkElement, initialSpace.nextSibling);
-                    originBoldElement.parentNode.removeChild(countryElement);
-                }
+            if(flagImage){
+                originBold.parentNode.insertBefore(flagImage,initialSpace.nextSibling);
+                const spaceAfter = document.createTextNode(' ');
+                originBold.parentNode.insertBefore(spaceAfter,flagImage.nextSibling);
+                originBold.parentNode.insertBefore(link,spaceAfter.nextSibling);
+                originBold.parentNode.removeChild(countryElem);
+            } else {
+                originBold.parentNode.insertBefore(link,initialSpace.nextSibling);
+                originBold.parentNode.removeChild(countryElem);
             }
         }
     };
 
-    // Execute processClickableInfo first, then processVehicleTitle, then findAndLogCountry
+    // Execute all
     processClickableInfo();
-    processVehicleTitle().then(() => {
-        findAndLogCountry();
-    });
+    processVehicleTitle().then(()=>{ findAndLogCountry(); });
 })();

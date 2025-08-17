@@ -48,6 +48,20 @@ Once installed, the script will automatically run on any page matching `*://*.ig
 
 ## Changelog
 
+### Version 1.3 - 17/08/2025
+
+* Rewritten code to optimize functionality.
+* Added exceptions:
+    * Bolloré.
+    * Clément-Bayard.
+    * Crosslé.
+    * DMC.
+    * DeLorean.
+    * Končar.
+    * Rába.
+    * Skipasýn-Icelandic.
+ * Land-Rover is now displayed as Land Rover. 
+
 ### Version 1.2 - 16/08/2025
 
 * Support for IGCD V4.
@@ -56,11 +70,11 @@ Once installed, the script will automatically run on any page matching `*://*.ig
 
 * **Clickable logo**: clicking the logo directs to the page with all models of that make.
 * **Clickable Origin**: clicking the origin directs to the page with all makes from that country.
-* **Added exceptions:**
-    * Specific exception for **A:Level**, displaying its correct logo.
-    * Specific exception for **Puma (Italy)**, displaying its correct logo.
-    * Specific exception for **Đuro Đaković**, redirecting correctly.
-    * Specific exception for **Konštrukta Trenčín**, redirecting correctly.
+* Added exceptions:
+    * A:Level.
+    * Đuro Đaković.
+    * Konštrukta Trenčín.
+    * Puma (Italy).
 
 ### Version 1.0 - 29/04/2025
 
@@ -76,10 +90,9 @@ Once installed, the script will automatically run on any page matching `*://*.ig
 
 ## Known Bugs
 
-* Clicking on certain makes with special characters, such as [Đuro Đaković](https://igcd.net/vehicle.php?id=245829), may result in an error when searching. This is due to the structure of IGCD, and this script can't resolve that.
-* Currently, the makes "American Bridge Co.", "American Car Company", "American Coal Enterprises", and "American Ship Building Company" don't have their own logos, the script mistakenly displays the logo for the "American" make instead. Since IGCD doesn't distinguish between make and model in its storage system, I have to scrape the page and try to match any existing logos. In these cases, it only finds and returns "American". The same issue occurs with "Derby Works" with "Derby", "Bell Boeing" with "Bell", "Lake Shore" with "Lake", "Bristol Boats" with "Bristol", etc.
-* For some reason, there is a file named [Devel Sixteen.png](https://igcd.net/logos/Devel%20Sixteen.png) (it should be Devel.png). This causes the logo to display incorrectly on Devel Sixteen vehicles.
-
+* Currently, the makes "**[American Bridge Co.](https://igcd.net/marque.php?id=American+Bridge+Co.&pays=US)**", "**[American Car Company](https://igcd.net/marque.php?id=American+Car+Company&pays=US)**", "**[American Coal Enterprises](https://igcd.net/marque.php?id=American+Coal+Enterprises&pays=US)**", and "**[American Ship Building Company](https://igcd.net/marque.php?id=American+Ship+Building+Company&pays=US)**" don't have their own logos, the script mistakenly displays the logo for the "**[American](https://igcd.net/marque.php?id=American&pays=US)**" make instead. Since IGCD doesn't distinguish between make and model in its storage system, I have to scrape the page and try to match any existing logos. In these cases, it only finds and returns "**[American](https://igcd.net/marque.php?id=American&pays=US)**". The same issue occurs with "**[Derby Works](https://igcd.net/marque.php?id=Derby+Works&pays=UK)**" with "**[Derby](https://igcd.net/marque.php?id=Derby&pays=FR)**", "**[Bell Boeing](https://igcd.net/marque.php?id=Bell+Boeing&pays=US)**" with "**[Bell](https://igcd.net/marque.php?id=Bell&pays=US)**", "**[Lake Shore](https://igcd.net/marque.php?id=Lake+Shore&pays=US)**" with "**[Lake](https://igcd.net/marque.php?id=Lake&pays=US)**", "**[Bristol Boats](https://igcd.net/marque.php?id=Bristol+Boats&pays=UK)**" with "**[Bristol](https://igcd.net/marque.php?id=Bristol&pays=UK)**", etc.
+* For "**Devel Sixteen**", the script merges the make and model because, for some reason, there is a file named "[Devel Sixteen.png](https://igcd.net/logos/Devel%20Sixteen.png)". The proper solution would be to remove this file from the database.
+* Makes that start with numbers, such as "[**23 August Works**](https://igcd.net/marque.php?id=23+August+Works&pays=RO)", will display an incorrect logo because in IGCD V4 the logos are named with numbers.
 
 ## Author
 

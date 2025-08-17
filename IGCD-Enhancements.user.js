@@ -4,6 +4,7 @@
 // @author       Klumb3r
 // @description  Shows logo, and several links are now clickable
 // @match        *://*.igcd.net/vehicle.php?id=*
+// @match        *://*.igcd.net/game.php?id=*
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
@@ -154,6 +155,8 @@
 
     // Process vehicle title
     const processVehicleTitle = async () => {
+        if (!window.location.href.includes('vehicle.php')) return;
+
         const targetH5 = document.querySelector('h5');
         if(!targetH5) return;
 
@@ -294,6 +297,8 @@
 
     // Make Surname, Chassis, and Extra info clickable
     const processClickableInfo = () => {
+        if (!window.location.href.includes('vehicle.php')) return;
+
         const searchFields = ['Surname','Chassis','Extra info'];
         const linkStyleClickableInfo = {
             color:'inherit',
@@ -315,7 +320,6 @@
                         let previous = bold;
                         let accumulated = '';
                         const words = targetText.split(' ');
-
                         const spaceNode = document.createTextNode(' ');
                         parent.insertBefore(spaceNode,nextSibling);
                         previous = spaceNode;
@@ -345,6 +349,8 @@
 
     // Function to find and make the country clickable
     const findAndLogCountry = () => {
+        if (!window.location.href.includes('vehicle.php')) return;
+
         const originBold = Array.from(document.querySelectorAll('b')).find(b=>b.textContent.includes('Origin:'));
         if(!originBold) return;
         let countryElem=null, countryCode=null, flagImage=null, nextNode=originBold.nextSibling;
@@ -388,7 +394,67 @@
         }
     };
 
-    // Execute all
+    // Make Publisher and Developer clickable
+    const processGameInfo = () => {
+        if (!window.location.href.includes('game.php')) return;
+        const gameFields = ['Publisher', 'Developer'];
+        const linkStyleClickableInfo = {
+            color: 'inherit',
+            fontFamily: 'inherit',
+            fontSize: 'inherit',
+            textDecoration: 'none',
+            cursor: 'pointer'
+        };
+        const allBolds = document.querySelectorAll('b');
+
+        gameFields.forEach(field => {
+            const searchText = field + ':';
+            allBolds.forEach(bold => {
+                if (bold.textContent.includes(searchText)) {
+                    let nextSibling = bold.nextSibling;
+                    if (nextSibling && nextSibling.nodeType === Node.TEXT_NODE && nextSibling.textContent.trim()) {
+                        const targetText = nextSibling.textContent.trim();
+                        const parent = bold.parentNode;
+                        let previous = bold;
+                        const words = targetText.split(' ');
+                        let accumulated = '';
+
+                        // Create a space node for separation
+                        const spaceNode = document.createTextNode(' ');
+                        parent.insertBefore(spaceNode, nextSibling);
+                        previous = spaceNode;
+
+                        words.forEach((word, index) => {
+                            const linkText = accumulated ? `${accumulated} ${word}`.trim() : word;
+                            const searchUrl = `https://igcd.net/search.php?title=${encodeURIComponent(normalizeForSearch(linkText))}&type=jeux`;
+                            const link = document.createElement('a');
+                            link.href = searchUrl;
+                            link.textContent = word;
+                            Object.assign(link.style, linkStyleClickableInfo);
+                            parent.insertBefore(link, previous.nextSibling);
+                            previous = link;
+
+                            // Add space between words
+                            if (index < words.length - 1) {
+                                accumulated += `${word} `;
+                                const space = document.createTextNode(' ');
+                                parent.insertBefore(space, previous.nextSibling);
+                                previous = space;
+                            } else {
+                                accumulated = linkText;
+                            }
+                        });
+                        if (nextSibling.parentNode) {
+                            nextSibling.parentNode.removeChild(nextSibling);
+                        }
+                    }
+                }
+            });
+        });
+    };
+
+    // Execute all functions, each one will check if it's on the correct page.
     processClickableInfo();
+    processGameInfo();
     processVehicleTitle().then(()=>{ findAndLogCountry(); });
 })();

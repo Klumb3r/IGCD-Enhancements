@@ -60,7 +60,8 @@ Once installed, the script will automatically run on any page matching `*://*.ig
     * Končar.
     * Rába.
     * Skipasýn-Icelandic.
- * Land-Rover is now displayed as Land Rover. 
+ * Land-Rover is now displayed as Land Rover.
+ * Developer and Publisher are now clickable on game pages.
 
 ### Version 1.2 - 16/08/2025
 

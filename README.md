@@ -59,7 +59,7 @@ Once installed, the script will automatically run on any page matching `*://*.ig
     * Android: Google Play Store.
     * iOS: App Store.
             <img width="280" height="251" alt="igcd" src="https://github.com/user-attachments/assets/93c5bd80-d8ac-4681-9a80-1771bd50815b" />
-* Added DLC store links on vehicle pages (SteamDB, PlayStation Store, Xbox Store).
+* Added DLC store links on vehicle pages (SteamDB, PlayStation Store, Xbox Store) (thanks to speedfreak975 for the idea).
             <img width="278" height="52" alt="dlc" src="https://github.com/user-attachments/assets/c7ad2125-11f8-4f65-a4e7-163b2a13f863" />
 * Contributors are now clickable on game pages.
             <img width="397" height="26" alt="contributors" src="https://github.com/user-attachments/assets/4b82bb93-cdd8-4764-9df0-aab289bd6707" />
@@ -87,7 +87,7 @@ Once installed, the script will automatically run on any page matching `*://*.ig
 ### Version 1.1 - 03/05/2025
 
 * **Clickable logo**: clicking the logo directs to the page with all models of that make.
-* **Clickable Origin**: clicking the origin directs to the page with all makes from that country.
+* **Clickable Origin**: clicking the origin directs to the page with all makes from that country (thanks to Comfortably Numb for the idea).
 * Added exceptions:
     * A:Level.
     * Đuro Đaković.

@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         IGCD Enhancements
-// @version      1.3
+// @version      2.0
 // @author       Klumb3r
-// @description  Shows logo, and several links are now clickable
+// @description  Shows logo, several links are now clickable, and adds external links to game pages
 // @match        *://*.igcd.net/vehicle.php?id=*
 // @match        *://*.igcd.net/game.php?id=*
 // @grant        GM_xmlhttpRequest
@@ -42,20 +42,6 @@
             if(exists) return url;
         }
         return null;
-    };
-
-    // Create a simple styled link element
-    const createStyledLink = (text, url) => {
-        const linkElement = document.createElement('a');
-        linkElement.href = url;
-        linkElement.textContent = text;
-        Object.assign(linkElement.style, {
-            color: 'inherit',
-            fontSize: '1em',
-            fontWeight: 'normal',
-            textDecoration: 'none'
-        });
-        return linkElement;
     };
 
     // Create a link element for titles with hover underline effect
@@ -453,8 +439,282 @@
         });
     };
 
-    // Execute all functions, each one will check if it's on the correct page.
+    // Add external links to game pages (MobyGames, Wikipedia, SteamDB, etc.)
+    const addExternalGameLinks = () => {
+        if (!window.location.href.includes('game.php')) return;
+
+        let game = document.querySelector('.card-header h5')?.textContent.trim().replace(/\s*\(\d{4}\)/, '').trim();
+        if(!game) return;
+
+        let encoded = encodeURIComponent(game);
+
+        // Get platforms text from the Platforms row
+        let platformsText = '';
+        const allBolds = document.querySelectorAll('b');
+        for (let bold of allBolds) {
+            if (bold.textContent.includes('Platforms:')) {
+                let nextSibling = bold.nextSibling;
+                if (nextSibling && nextSibling.nodeType === Node.TEXT_NODE) {
+                    platformsText = nextSibling.textContent.trim();
+                } else if (nextSibling && nextSibling.nodeType === Node.ELEMENT_NODE) {
+                    platformsText = nextSibling.textContent.trim();
+                }
+                break;
+            }
+        }
+
+        // Always visible icons (MobyGames, Metacritic, Wikipedia, IGDB, HowLongToBeat)
+        let icons = [
+            {url: `https://www.mobygames.com/search/?q=${encoded}`, img: 'https://i.imgur.com/3FBWI6J.png'},
+            {url: `https://www.metacritic.com/search/${encoded}/`, img: 'https://i.imgur.com/1q4mbTl.png'},
+            {url: `https://en.wikipedia.org/w/index.php?search=${encoded}`, img: 'https://i.imgur.com/fpvrhzB.png'},
+            {url: `https://www.igdb.com/search?q=${encoded}`, img: 'https://i.imgur.com/Cqz8xq1.png'},
+            {url: `https://howlongtobeat.com/?q=${encoded}`, img: 'https://i.imgur.com/S0ct3ct.png'}
+        ];
+
+        // Check platforms and add conditional icons
+        if (platformsText) {
+            // PC platform (exact word, not containing "PC" like Amstrad CPC)
+            if (/\bPC\b/i.test(platformsText)) {
+                icons.push(
+                    {url: `https://www.pcgamingwiki.com/w/index.php?search=${encoded}`, img: 'https://i.imgur.com/Hg7gumt.png'},
+                    {url: `https://steamdb.info/search/?a=all&q=${encoded}`, img: 'https://i.imgur.com/qJ3cF7X.png'},
+                    {url: `https://www.gog.com/en/games?query=${encoded}`, img: 'https://i.imgur.com/txZKl2u.png'},
+                    {url: `https://store.epicgames.com/en-US/browse?q=${encoded}`, img: 'https://i.imgur.com/ls7Pr3m.png'}
+                );
+            } else if (/\bMac\b/i.test(platformsText)) {
+                // Mac also gets PC stores
+                icons.push(
+                    {url: `https://www.pcgamingwiki.com/w/index.php?search=${encoded}`, img: 'https://i.imgur.com/Hg7gumt.png'},
+                    {url: `https://steamdb.info/search/?a=all&q=${encoded}`, img: 'https://i.imgur.com/qJ3cF7X.png'},
+                    {url: `https://www.gog.com/en/games?query=${encoded}`, img: 'https://i.imgur.com/txZKl2u.png'},
+                    {url: `https://store.epicgames.com/en-US/browse?q=${encoded}`, img: 'https://i.imgur.com/ls7Pr3m.png'}
+                );
+            }
+
+            // PlayStation
+            if (/PlayStation/i.test(platformsText)) {
+                icons.push(
+                    {url: `https://store.playstation.com/en-us/search/${encoded}`, img: 'https://i.imgur.com/gnzTt3Q.png'}
+                );
+            }
+
+            // Xbox
+            if (/Xbox/i.test(platformsText)) {
+                icons.push(
+                    {url: `https://www.xbox.com/en-US/Search/Results?q=${encoded}`, img: 'https://i.imgur.com/sxxMtRP.png'}
+                );
+            }
+
+            // Nintendo Switch (exact word)
+            if (/\bSwitch\b/i.test(platformsText)) {
+                icons.push(
+                    {url: `https://www.nintendo.com/us/search/#q=${encoded}`, img: 'https://i.imgur.com/nxts7lc.png'}
+                );
+            }
+
+            // Android / Mobile
+            if (/Android|Mobile/i.test(platformsText)) {
+                icons.push(
+                    {url: `https://play.google.com/store/search?q=${encoded}&c=apps`, img: 'https://i.imgur.com/YBMcUjc.png'}
+                );
+            }
+
+            // iOS / Mobile
+            if (/iOS|Mobile/i.test(platformsText)) {
+                icons.push(
+                    {url: `https://apps.apple.com/us/iphone/search?term=${encoded}`, img: 'https://i.imgur.com/hyyWVVf.png'}
+                );
+            }
+        }
+
+        // Remove duplicates
+        const uniqueIcons = [];
+        const seenUrls = new Set();
+        for (const icon of icons) {
+            if (!seenUrls.has(icon.url)) {
+                seenUrls.add(icon.url);
+                uniqueIcons.push(icon);
+            }
+        }
+
+        let container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.alignItems = 'center';
+        container.style.gap = '10px';
+        container.style.marginTop = '10px';
+
+        // If 6 or fewer icons, show in a single row
+        if (uniqueIcons.length <= 6) {
+            let singleRow = document.createElement('div');
+            singleRow.style.display = 'flex';
+            singleRow.style.gap = '10px';
+            singleRow.style.justifyContent = 'center';
+
+            uniqueIcons.forEach((icon) => {
+                let link = document.createElement('a');
+                link.href = icon.url;
+                link.target = '_blank';
+                link.innerHTML = `<img src="${icon.img}" width="20" height="20">`;
+                singleRow.appendChild(link);
+            });
+
+            container.appendChild(singleRow);
+        } else {
+            // Two rows for 6 or more icons
+            let firstRow = document.createElement('div');
+            firstRow.style.display = 'flex';
+            firstRow.style.gap = '10px';
+            firstRow.style.justifyContent = 'center';
+
+            let secondRow = document.createElement('div');
+            secondRow.style.display = 'flex';
+            secondRow.style.gap = '10px';
+            secondRow.style.justifyContent = 'center';
+
+            let half = Math.ceil(uniqueIcons.length / 2);
+
+            uniqueIcons.forEach((icon, index) => {
+                let link = document.createElement('a');
+                link.href = icon.url;
+                link.target = '_blank';
+                link.innerHTML = `<img src="${icon.img}" width="20" height="20">`;
+
+                if (index < half) {
+                    firstRow.appendChild(link);
+                } else {
+                    secondRow.appendChild(link);
+                }
+            });
+
+            container.appendChild(firstRow);
+            container.appendChild(secondRow);
+        }
+
+        let targetCell = document.querySelector('.card-custom .text-center');
+        if(targetCell) {
+            targetCell.appendChild(container);
+        } else {
+            document.querySelector('.card-custom').after(container);
+        }
+    };
+
+    // Find the DLC and add store links
+    const processDlcLinks = () => {
+        if (!window.location.href.includes('vehicle.php')) return;
+
+        // Find the DLC by its classes and SVG icon
+        const dlcBadge = document.querySelector('.badge.badge-info[title]');
+        if (!dlcBadge) return;
+
+        let dlcName = dlcBadge.getAttribute('title');
+        if (!dlcName || dlcName.trim() === '') return;
+
+        // Remove the word DLC if it is present
+        dlcName = dlcName.replace(/^DLC\s+/i, '').replace(/\s+DLC$/i, '');
+
+        let encoded = encodeURIComponent(dlcName);
+
+        // Create container for DLC links
+        let dlcContainer = document.createElement('span');
+        dlcContainer.style.display = 'inline-flex';
+        dlcContainer.style.gap = '8px';
+        dlcContainer.style.marginLeft = '5px';
+        dlcContainer.style.marginRight = '5px';
+        dlcContainer.style.alignItems = 'center';
+        dlcContainer.style.verticalAlign = 'middle';
+
+        let dlcIcons = [
+            {url: `https://steamdb.info/search/?a=all&q=${encoded}`, img: 'https://i.imgur.com/qJ3cF7X.png'},
+            {url: `https://store.playstation.com/en-us/search/${encoded}`, img: 'https://i.imgur.com/gnzTt3Q.png'},
+            {url: `https://www.xbox.com/en-US/search/results/addons?q=${encoded}`, img: 'https://i.imgur.com/sxxMtRP.png'}
+        ];
+
+        dlcIcons.forEach((icon) => {
+            let link = document.createElement('a');
+            link.href = icon.url;
+            link.target = '_blank';
+            link.style.display = 'inline-flex';
+            link.style.alignItems = 'center';
+            link.innerHTML = `<img src="${icon.img}" width="20" height="20" title="Search for ${dlcName}" style="vertical-align: middle;">`;
+            dlcContainer.appendChild(link);
+        });
+
+        // Insert the container right after the DLC
+        dlcBadge.insertAdjacentElement('afterend', dlcContainer);
+    };
+
+    // Make contributors clickable
+    const processContributors = () => {
+        if (!window.location.href.includes('game.php')) return;
+
+        // Find the Contributors element
+        const allBolds = document.querySelectorAll('b');
+        const contributorsBold = Array.from(allBolds).find(bold =>
+                                                           bold.textContent.includes('Contributors (assigned)') ||
+                                                           bold.textContent.includes('Contributors (page completed)') ||
+                                                           bold.textContent.includes('Contributors (in progress)')
+                                                          );
+
+        if (!contributorsBold) return;
+
+        // Get the next sibling (text node with the names)
+        let nextSibling = contributorsBold.nextSibling;
+        if (!nextSibling || nextSibling.nodeType !== Node.TEXT_NODE) return;
+
+        let namesText = nextSibling.textContent.trim();
+        if (!namesText || namesText === '') return;
+
+        // Check "TBD" (not clickable)
+        if (namesText === 'TBD') return;
+
+        // Split names by commas and trim whitespace
+        let names = namesText.split(',').map(name => name.trim()).filter(name => name !== '');
+        if (names.length === 0) return;
+
+        const parent = contributorsBold.parentNode;
+        let previous = contributorsBold;
+
+        // Insert a space after the bold text
+        const spaceNode = document.createTextNode(' ');
+        parent.insertBefore(spaceNode, nextSibling);
+        previous = spaceNode;
+
+        // Remove the original text node
+        parent.removeChild(nextSibling);
+
+        // Create clickable links for each name
+        names.forEach((name, index) => {
+            const searchUrl = `https://igcd.net/gameslistcontribu.php?id=${encodeURIComponent(name)}`;
+            const link = document.createElement('a');
+            link.href = searchUrl;
+            link.textContent = name;
+            Object.assign(link.style, {
+                color: 'inherit',
+                fontFamily: 'inherit',
+                fontSize: 'inherit',
+                textDecoration: 'none',
+                cursor: 'pointer'
+            });
+
+            parent.insertBefore(link, previous.nextSibling);
+            previous = link;
+
+            // Add comma and space after the name (except for the last one)
+            if (index < names.length - 1) {
+                const commaSpace = document.createTextNode(', ');
+                parent.insertBefore(commaSpace, previous.nextSibling);
+                previous = commaSpace;
+            }
+        });
+    };
+
+    // Execute all functions
     processClickableInfo();
     processGameInfo();
-    processVehicleTitle().then(()=>{ findAndLogCountry(); });
+    processVehicleTitle().then(() => { findAndLogCountry(); });
+    addExternalGameLinks();
+    processDlcLinks();
+    processContributors();
 })();

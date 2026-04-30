@@ -48,6 +48,23 @@ Once installed, the script will automatically run on any page matching `*://*.ig
 
 ## Changelog
 
+### Version 2.0 - 04/30/2026
+
+* Added external links to game pages with platform detection:
+    * Always visible: MobyGames, Metacritic, Wikipedia, IGDB, HowLongToBeat.
+    * PC/Mac: PCGamingWiki, SteamDB, GOG, Epic Games Store.
+    * PlayStation: PlayStation Store.
+    * Xbox: Xbox Store.
+    * Switch: Nintendo eShop.
+    * Android: Google Play Store.
+    * iOS: App Store.
+            <img width="280" height="251" alt="igcd" src="https://github.com/user-attachments/assets/93c5bd80-d8ac-4681-9a80-1771bd50815b" />
+* Added DLC store links on vehicle pages (SteamDB, PlayStation Store, Xbox Store).
+            <img width="278" height="52" alt="dlc" src="https://github.com/user-attachments/assets/c7ad2125-11f8-4f65-a4e7-163b2a13f863" />
+* Contributors are now clickable on game pages.
+            <img width="397" height="26" alt="contributors" src="https://github.com/user-attachments/assets/4b82bb93-cdd8-4764-9df0-aab289bd6707" />
+
+
 ### Version 1.3 - 17/08/2025
 
 * Rewritten code to optimize functionality.

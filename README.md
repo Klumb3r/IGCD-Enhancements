@@ -146,7 +146,6 @@ These links open searches; they do not confirm that a game or DLC is available o
 
 * IGCD vehicle titles may contain only plain text, without separate make and model fields. If a make is missing from the built-in table and no usable make link is available, the script uses its legacy logo search. Recognition can be slower or inaccurate in these cases.
 * Missing or incorrect logos on IGCD may still require corrections on the website. A recognized make without a working logo keeps its clickable empty logo area.
-* The game-cover tooltip uses the name in the page title. It does not add a release year when that year is absent from the title.
 
 ## Author
 

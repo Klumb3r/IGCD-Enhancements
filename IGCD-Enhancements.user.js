@@ -1,6 +1,8 @@
 // ==UserScript==
 // @name         IGCD Enhancements
-// @version      3.0
+// @version      3.0.1
+// @updateURL    https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/main/IGCD-Enhancements.user.js
+// @downloadURL  https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/main/IGCD-Enhancements.user.js
 // @author       Klumb3r
 // @description  Shows logo, several links are now clickable, and adds external links to game pages
 // @match        *://*.igcd.net/vehicle.php?id=*
@@ -714,6 +716,7 @@
         "Arado": 783,
         "John Brown & Company": 784,
         "Hudong-Zhonghua Shipbuilding": 785,
+        "Hudong-Zhonghua Shipyard": 785,
         "Harbin": 786,
         "Arsenal de Brest": 787,
         "Germaniawerft": 788,
@@ -3432,7 +3435,6 @@
         "Softronic": 4362,
         "Lestrup Racing Team": 4369,
         "Bald Eagle Factory": 4370,
-        "Cameron Johnson Race Cars": 4371,
         "Alsthom-Atlantique": 4372,
         "NETA": 4374,
         "Deepal": 4375,
@@ -3806,6 +3808,7 @@
         "Japan Marine United": 5061,
         "IHI Marine United": 5062,
         "IAI-Ramta": 5065,
+        "CJ Race Cars": 5066,
     };
 
     // Check if an image URL exists by making a HEAD request

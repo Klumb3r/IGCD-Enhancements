@@ -1,116 +1,152 @@
 # IGCD Enhancements
 
-This user script for [Tampermonkey](https://www.tampermonkey.net/) enhances the experience on the Internet Game Cars Database (IGCD) website. It provides the following features:
+A [Tampermonkey](https://www.tampermonkey.net/) userscript that adds vehicle make logos, clickable information, and external search links to [IGCD](https://igcd.net/), the Internet Game Cars Database.
 
-* **Shows vehicle make logo:** Displays the logo of the vehicle's make next to the title for easier identification.
-* **Makes title elements (year, make, model) and additional info (Surname, Chassis, Extra info) clickable:** Turns these text elements into clickable links for quick searches on IGCD.
+**Version:** 3.0 | **Updated:** November 15, 2026 | **Author:** Klumb3r
 
+## Features
 
+* **Vehicle make logos:** Displays the make's logo next to the vehicle title, using an extensive built-in table of IGCD make IDs.
+* **Make recognition without a logo:** Recognizes makes independently of logo availability, keeping the make and model separate when the make is in the table.
+* **Clickable logo area:** Opens the make's page, respecting the country of origin and supported special cases. If the logo is unavailable, the transparent 100×80 area remains clickable for recognized makes.
+* **Clickable vehicle information:** Adds IGCD search links to the year, make, model, Surname, Chassis, and Extra info.
+* **Clickable country of origin:** Opens the list of makes from that country.
+* **Clickable game information:** Adds links to developers, publishers, and contributors on game pages.
+* **External game searches:** Adds links to game databases and stores based on the listed platforms.
+* **DLC searches:** Adds external store search links for DLC listed on vehicle pages.
+* **Hover labels:** Shows the make name over the logo area, the game name over its cover on vehicle pages, and the site name over external search icons.
+* **Faster title processing:** Known makes no longer wait for a logo check before the title is updated.
 
 ## Installation
 
-To install this script, you need to have the [Tampermonkey](https://www.tampermonkey.net/) browser extension installed.
+Install the [Tampermonkey](https://www.tampermonkey.net/) browser extension first.
 
-✨ **Step 1: Easy Direct Installation** ✨
+### Direct installation
 
-Just click the link below! Tampermonkey should automatically detect the script and guide you through the installation process.
+[**Install IGCD Enhancements**](https://github.com/Klumb3r/IGCD-Enhancements/raw/refs/heads/main/IGCD-Enhancements.user.js)
 
-👉 https://github.com/Klumb3r/IGCD-Enhancements/raw/refs/heads/main/IGCD-Enhancements.user.js 👈
+Tampermonkey should detect the script and display an installation page. Click **Install** to finish.
 
-Follow the prompts in Tampermonkey to complete the installation.
+### Alternative: import through the dashboard
 
-🛠️ **Step 2: Alternative Import via Tampermonkey Dashboard** 🛠️
+1. Click the Tampermonkey icon in your browser's toolbar.
+2. Open **Dashboard** and select the **Utilities** tab.
+3. Find **Import from URL** and paste:
 
-If the direct installation doesn't work for you, try this method:
+   ```text
+   https://github.com/Klumb3r/IGCD-Enhancements/raw/refs/heads/main/IGCD-Enhancements.user.js
+   ```
 
-1.  Click on the Tampermonkey icon in your browser's toolbar.
-2.  Go to the **"Dashboard"**.
-3.  Navigate to the **"Utilities"** tab.
-4.  Find the **"Import from URL"** section.
-5.  In the "URL" field, paste the following link:
-    ```
-    https://github.com/Klumb3r/IGCD-Enhancements/raw/refs/heads/main/IGCD-Enhancements.user.js
-    ```
-6.  Click the **"Import"** button.
-7.  Tampermonkey will then show you the installation page. Click **"Install"** to finish.
-
-
+4. Click **Import**, then **Install** on the installation page.
 
 ## Usage
 
-Once installed, the script will automatically run on any page matching `*://*.igcd.net/vehicle.php?id=*`. Simply navigate to a vehicle page on IGCD, and the enhancements will be visible.
-* Click on the vehicle make logo next to the title to search for that information.
-* Click on the **make** or **model** within the vehicle title to search for that information.
-* Click on the text following **Surname**, **Chassis**, or **Extra info** to search for that information.
-* Test the script here, on the [1998 Ford Crown Victoria](https://igcd.net/vehicle.php?id=50386).
+The script runs automatically on IGCD vehicle and game pages:
 
+```text
+*://*.igcd.net/vehicle.php?id=*
+*://*.igcd.net/game.php?id=*
+```
 
+### Vehicle pages
+
+* Click the make logo to open the make's page. If a recognized make has no logo, click the empty space to the left of the title.
+* Click the year, make, model, Surname, Chassis, or Extra info to search IGCD.
+* Click the country of origin to browse makes from that country.
+* Hover over the make logo area to see the make name.
+* Hover over the game cover to see the game name taken from the page title.
+* Use the external icons to search for the listed DLC, when available.
+
+Try it on the [1998 Ford Crown Victoria](https://igcd.net/vehicle.php?id=50386).
+
+### Game pages
+
+* Click developers, publishers, or contributors to browse their IGCD entries.
+* Use the external search icons to find the game on other sites. Hover over an icon to see its site name.
+
+| Platforms | External search links |
+|---|---|
+| All games | MobyGames, Metacritic, Wikipedia, IGDB, HowLongToBeat |
+| PC / Mac | PCGamingWiki, SteamDB, GOG, Epic Games Store |
+| PlayStation | PlayStation Store |
+| Xbox | Xbox Store |
+| Nintendo Switch | Nintendo eShop |
+| Android | Google Play Store |
+| iOS | App Store |
+| Mobile | Google Play Store, App Store |
+
+These links open searches; they do not confirm that a game or DLC is available on a particular store.
 
 ## Changelog
 
-### Version 2.0 - 04/30/2026
+### Version 3.0 - November 15, 2026
+
+* Added an extensive built-in make ID table for more reliable make recognition and numeric logo URLs used by IGCD V4.
+* Separated make recognition from logo availability. Known makes without logos now retain their correct make/model separation instead of falling back to a shorter make with a matching logo.
+* Fixed the previously reported make-matching cases involving American-prefixed makes, Derby Works, Bell Boeing, Lake Shore, and Bristol Boats.
+* Fixed make/model recognition for Devel Sixteen without relying on the incorrectly named logo file.
+* Improved support for makes beginning with numbers, including 23 August Works.
+* Added a clickable transparent 100×80 logo area for recognized makes whose logo is missing or fails to load.
+* Added make-name tooltips to the logo area, including when no logo is available.
+* Added a game-name tooltip to the cover on vehicle pages, using the existing page title without additional requests.
+* Prioritized recognized make links already present in the original vehicle title, with text matching as a fallback.
+* Made known-make title processing independent of logo loading and removed the preliminary logo request for those makes.
+* Optimized fallback matching to select the longest known make in one pass.
+* Removed duplicate logo URL attempts and added a three-second timeout per request in the legacy logo search.
+* Normalized repeated spaces, tabs, line breaks, and non-breaking spaces before recognizing the vehicle title.
+* Added site-name tooltips and accessibility labels to external game and DLC icons.
+* Prevented duplicate external game and DLC icon groups if their functions run again.
+* Updated make entries and simplified exceptions now covered by the ID table, while preserving supported country-specific logos and special links.
+
+### Version 2.0 - April 30, 2026
 
 * Added external links to game pages with platform detection:
-    * Always visible: MobyGames, Metacritic, Wikipedia, IGDB, HowLongToBeat.
-    * PC/Mac: PCGamingWiki, SteamDB, GOG, Epic Games Store.
-    * PlayStation: PlayStation Store.
-    * Xbox: Xbox Store.
-    * Switch: Nintendo eShop.
-    * Android: Google Play Store.
-    * iOS: App Store.
-            <img width="280" height="251" alt="igcd" src="https://github.com/user-attachments/assets/93c5bd80-d8ac-4681-9a80-1771bd50815b" />
+  * Always visible: MobyGames, Metacritic, Wikipedia, IGDB, HowLongToBeat.
+  * PC/Mac: PCGamingWiki, SteamDB, GOG, Epic Games Store.
+  * PlayStation: PlayStation Store.
+  * Xbox: Xbox Store.
+  * Switch: Nintendo eShop.
+  * Android: Google Play Store.
+  * iOS: App Store.
+
+  <img width="280" height="251" alt="External game links" src="https://github.com/user-attachments/assets/93c5bd80-d8ac-4681-9a80-1771bd50815b" />
+
 * Added DLC store links on vehicle pages (thanks to speedfreak975 for the idea).
-            <img width="278" height="52" alt="dlc" src="https://github.com/user-attachments/assets/c7ad2125-11f8-4f65-a4e7-163b2a13f863" />
+
+  <img width="278" height="52" alt="DLC store links" src="https://github.com/user-attachments/assets/c7ad2125-11f8-4f65-a4e7-163b2a13f863" />
+
 * Contributors are now clickable on game pages.
-            <img width="397" height="26" alt="contributors" src="https://github.com/user-attachments/assets/4b82bb93-cdd8-4764-9df0-aab289bd6707" />
 
+  <img width="397" height="26" alt="Clickable contributors" src="https://github.com/user-attachments/assets/4b82bb93-cdd8-4764-9df0-aab289bd6707" />
 
-### Version 1.3 - 17/08/2025
+### Version 1.3 - August 17, 2025
 
 * Rewritten code to optimize functionality.
-* Added exceptions:
-    * Bolloré.
-    * Clément-Bayard.
-    * Crosslé.
-    * DMC.
-    * DeLorean.
-    * Končar.
-    * Rába.
-    * Skipasýn-Icelandic.
- * Land-Rover is now displayed as Land Rover.
- * Developer and Publisher are now clickable on game pages.
+* Added exceptions for Bolloré, Clément-Bayard, Crosslé, DMC, DeLorean, Končar, Rába, and Skipasýn-Icelandic.
+* Land-Rover is now displayed as Land Rover.
+* Developer and Publisher are now clickable on game pages.
 
-### Version 1.2 - 16/08/2025
+### Version 1.2 - August 16, 2025
 
-* Support for IGCD V4.
+* Added support for IGCD V4.
 
-### Version 1.1 - 03/05/2025
+### Version 1.1 - May 3, 2025
 
-* **Clickable logo**: clicking the logo directs to the page with all models of that make.
-* **Clickable Origin**: clicking the origin directs to the page from that country (thanks to Comfortably Numb for the idea).
-* Added exceptions:
-    * A:Level.
-    * Đuro Đaković.
-    * Konštrukta Trenčín.
-    * Puma (Italy).
+* Added clickable logos that open the page listing models from that make.
+* Added clickable countries of origin (thanks to Comfortably Numb for the idea).
+* Added exceptions for A:Level, Đuro Đaković, Konštrukta Trenčín, and Puma (Italy).
 
-### Version 1.0 - 29/04/2025
+### Version 1.0 - April 29, 2025
 
-* **Added logo:** the logo is displayed on the page.
-* **Clickable links:** the following sections are now clickable and take you to searches:
-    * Make (if the make doesn't have a logo, it doesn't differentiate between make and model).
-    * Model (if the make doesn't have a logo, it doesn't differentiate between make and model).
-    * Surname.
-    * Extra info.
-    * Chassis.
+* Added vehicle make logos.
+* Added search links for Make, Model, Surname, Extra info, and Chassis.
+* Make/model separation initially depended on finding a matching logo.
 
+## Known Limitations
 
-
-## Known Bugs
-
-* Currently, the makes "**[American Bridge Co.](https://igcd.net/marque.php?id=American+Bridge+Co.&pays=US)**", "**[American Car Company](https://igcd.net/marque.php?id=American+Car+Company&pays=US)**", "**[American Coal Enterprises](https://igcd.net/marque.php?id=American+Coal+Enterprises&pays=US)**", and "**[American Ship Building Company](https://igcd.net/marque.php?id=American+Ship+Building+Company&pays=US)**" don't have their own logos, the script mistakenly displays the logo for the "**[American](https://igcd.net/marque.php?id=American&pays=US)**" make instead. Since IGCD doesn't distinguish between make and model in its storage system, I have to scrape the page and try to match any existing logos. In these cases, it only finds and returns "**[American](https://igcd.net/marque.php?id=American&pays=US)**". The same issue occurs with "**[Derby Works](https://igcd.net/marque.php?id=Derby+Works&pays=UK)**" with "**[Derby](https://igcd.net/marque.php?id=Derby&pays=FR)**", "**[Bell Boeing](https://igcd.net/marque.php?id=Bell+Boeing&pays=US)**" with "**[Bell](https://igcd.net/marque.php?id=Bell&pays=US)**", "**[Lake Shore](https://igcd.net/marque.php?id=Lake+Shore&pays=US)**" with "**[Lake](https://igcd.net/marque.php?id=Lake&pays=US)**", "**[Bristol Boats](https://igcd.net/marque.php?id=Bristol+Boats&pays=UK)**" with "**[Bristol](https://igcd.net/marque.php?id=Bristol&pays=UK)**", etc.
-* For "**Devel Sixteen**", the script merges the make and model because, for some reason, there is a file named "[Devel Sixteen.png](https://igcd.net/logos/Devel%20Sixteen.png)". The proper solution would be to remove this file from the database.
-* Makes that start with numbers, such as "[**23 August Works**](https://igcd.net/marque.php?id=23+August+Works&pays=RO)", will display an incorrect logo because in IGCD V4 the logos are named with numbers.
+* IGCD vehicle titles may contain only plain text, without separate make and model fields. If a make is missing from the built-in table and no usable make link is available, the script uses its legacy logo search. Recognition can be slower or inaccurate in these cases.
+* Missing or incorrect logos on IGCD may still require corrections on the website. A recognized make without a working logo keeps its clickable empty logo area.
+* The game-cover tooltip uses the name in the page title. It does not add a release year when that year is absent from the title.
 
 ## Author
 

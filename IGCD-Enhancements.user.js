@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         IGCD Enhancements
-// @version      3.0.1
+// @version      3.1
 // @updateURL    https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/main/IGCD-Enhancements.user.js
 // @downloadURL  https://raw.githubusercontent.com/Klumb3r/IGCD-Enhancements/main/IGCD-Enhancements.user.js
 // @author       Klumb3r
 // @description  Shows logo, several links are now clickable, and adds external links to game pages
 // @match        *://*.igcd.net/vehicle.php?id=*
 // @match        *://*.igcd.net/game.php?id=*
+// @match        *://*.igcd.net/yourcomments.php*
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
@@ -17,7 +18,21 @@
     const removeAccents = (text) => text.normalize('NFD').replace(/[\u0300-\u036fĐđĆć]/g, (match) => ({ 'Đ': 'D', 'đ': 'd', 'Ć': 'C', 'ć': 'c' }[match] || ''));
 
     // Normalize text for search URLs (remove accents and replace spaces with hyphens)
-    const normalizeForSearch = (text) => removeAccents(text).replace(/\s+/g, '-');
+    const normalizeForSearch = (text) => removeAccents(text).trim().replace(/\s+/g, '+').replace(/&/g, '%26');
+
+    // Normalize interface labels so page features work in English and French.
+    const normalizeUiLabel = (text) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim().toLocaleLowerCase();
+    const uiLabelEquals = (text, labels) => labels.some(label => {
+        const value = normalizeUiLabel(text).replace(/:$/, '');
+        const expected = normalizeUiLabel(label).replace(/:$/, '');
+        return value === expected;
+    });
+    const uiLabelStartsWith = (text, labels) => labels.some(label => {
+        const value = normalizeUiLabel(text);
+        const expected = normalizeUiLabel(label);
+        return value.startsWith(expected);
+    });
+    const findBoldUiLabel = (labels) => Array.from(document.querySelectorAll('b')).find(bold => uiLabelStartsWith(bold.textContent, labels));
 
     // Make IDs, ordered by numeric ID (not by country or make name)
     const makeIds = {
@@ -109,6 +124,7 @@
         "Mercedes-AMG": 92,
         "Koenigsegg": 93,
         "Skoda": 94,
+        "Škoda": 94,
         "Krupp": 95,
         "Piaggio": 96,
         "Oldsmobile": 97,
@@ -292,7 +308,6 @@
         "Bimota": 302,
         "Focke-Wulf": 303,
         "ČKD": 304,
-        "CKD": 304,
         "Northrop": 305,
         "Setra": 306,
         "Pressed Steel Car Company": 307,
@@ -391,6 +406,7 @@
         "De Soto": 405,
         "Nissan Diesel": 406,
         "Bobcat": 407,
+        "Tadano Faun": 408,
         "Republic": 409,
         "E-One": 410,
         "Proton": 411,
@@ -522,7 +538,6 @@
         "Swindon Works": 556,
         "St. Louis Car Company": 557,
         "ČKD Tatra": 558,
-        "CKD Tatra": 558,
         "New York Shipbuilding Corporation": 559,
         "Pescarolo Sport": 560,
         "Autobianchi": 561,
@@ -567,7 +582,6 @@
         "Solaris": 607,
         "Alexander Dennis": 608,
         "Nexter": 609,
-        "FCM": 611,
         "Boeing-Stearman": 613,
         "Pitts": 614,
         "GEC Alsthom": 616,
@@ -587,6 +601,7 @@
         "Luftschiffbau Zeppelin": 633,
         "Higgins": 634,
         "Boeing-Vertol": 635,
+        "Kolomensky Zavod": 636,
         "RVR": 637,
         "Consolidated": 638,
         "Crewe Works": 639,
@@ -716,14 +731,12 @@
         "Arado": 783,
         "John Brown & Company": 784,
         "Hudong-Zhonghua Shipbuilding": 785,
-        "Hudong-Zhonghua Shipyard": 785,
         "Harbin": 786,
         "Arsenal de Brest": 787,
         "Germaniawerft": 788,
         "Willys-Overland": 789,
         "Iveco-Ford": 790,
         "Saviem": 791,
-        "SS": 793,
         "MCW": 794,
         "LZA": 795,
         "Norton": 796,
@@ -1073,7 +1086,6 @@
         "Seattle-Tacoma Shipbuilding": 1211,
         "Nanchang": 1212,
         "HMNB Portsmouth": 1213,
-        "ABB Transportation": 1214,
         "Team Associated": 1215,
         "J-TREC": 1216,
         "SECN": 1217,
@@ -1104,7 +1116,6 @@
         "Brawn": 1245,
         "Isotta Fraschini": 1246,
         "Cizeta-Moroder": 1247,
-        "Tadano Faun": 1248, // TODO: change the Tadano Faun logo.
         "Gilera": 1249,
         "Linde": 1250,
         "Sinotruk": 1251,
@@ -1370,7 +1381,6 @@
         "Huntington Ingalls Industries": 1546,
         "Tonka": 1547,
         "Paccar": 1548,
-        "Mechanical Factory Bucharest": 1549,
         "Bartini": 1550,
         "Pafawag": 1551,
         "Hitachi-Mitsubishi-Toshiba": 1552,
@@ -1606,7 +1616,7 @@
         "Société Franco-Belge": 1822,
         "SACM": 1823,
         "Beyer, Peacock & Company": 1824,
-        "Şantierul Naval 2 Mai": 1825,
+        "Șantierul Naval 2 Mai": 1825,
         "Maxus": 1826,
         "Brilliance": 1827,
         "Schweizer": 1828,
@@ -1637,7 +1647,6 @@
         "Vanwall": 1862,
         "Brunon-Valette": 1863,
         "Associated Engineers Inc.": 1864,
-        "Eidgenoessische Konstruktionswerkstaette": 1865,
         "EMC": 1866,
         "Götaverken": 1867,
         "Rotterdamsche Droogdok Maatschappij": 1868,
@@ -1653,7 +1662,6 @@
         "ORA": 1882,
         "EarthRoamer": 1884,
         "Konstal": 1885,
-        "Cockerill": 1888,
         "Bryansk Machine-Building Plant": 1889,
         "Air Commander": 1891,
         "Fablok": 1892,
@@ -1696,7 +1704,7 @@
         "IKA-Renault": 1933,
         "Modenas": 1934,
         "Sunred": 1935,
-        "CZ": 1936,
+        "ČZ": 1936,
         "High End Performance": 1937,
         "Yellow Cab": 1938,
         "Marion Power Shovel": 1939,
@@ -1737,7 +1745,6 @@
         "Newell": 1981,
         "Argyll": 1982,
         "Thwaites": 1983,
-        "Gräf and Stift": 1984,
         "Charron": 1985,
         "Plaxton": 1987,
         "Jones": 1989,
@@ -2057,7 +2064,7 @@
         "SMI-Motorsport": 2364,
         "McAllister Racing": 2365,
         "Xceed RC": 2366,
-        "CSD": 2367,
+        "ČSD": 2367,
         "Davenport Locomotive Works": 2368,
         "Chengdu-PAC": 2369,
         "Heuliez": 2370,
@@ -2073,7 +2080,6 @@
         "Kravtsev": 2383,
         "Airship Industries": 2384,
         "Gremyakin": 2385,
-        "SCNE": 2386,
         "IMAM": 2387,
         "VEB Lokomotivbau Karl Marx Babelsberg": 2388,
         "Šálek": 2389,
@@ -2108,7 +2114,6 @@
         "Kaluga Machine Factory": 2433,
         "SOKO": 2434,
         "Loire": 2435,
-        "Ingenieuskaantor voor Scheepsbouw": 2436,
         "23 August Works": 2439,
         "Bristol Boats": 2442,
         "Bush Ranger": 2443,
@@ -2345,7 +2350,6 @@
         "OK1": 2734,
         "DPE Kart Technology": 2735,
         "Scania-Kutter": 2736,
-        "TAZ Skoda": 2737,
         "Jimmy's Customs": 2739,
         "SeAZ": 2741,
         "Cectek": 2742,
@@ -2354,7 +2358,6 @@
         "WaterCar": 2747,
         "Fiat-Terni": 2748,
         "Tiffin": 2749,
-        "Gyrobus": 2750,
         "Cub Cadet": 2751,
         "Wallack": 2752,
         "Plaisance": 2753,
@@ -2623,7 +2626,6 @@
         "Blackwood & Gordon": 3066,
         "Burnham, Parry, Williams & Company": 3067,
         "Newag": 3068,
-        "War Shipping Administration": 3069,
         "Hudswell Clarke": 3070,
         "Neilson and Company": 3071,
         "Missouri Valley Bridge": 3072,
@@ -2635,7 +2637,6 @@
         "The Columbia Group": 3078,
         "Jabiru": 3079,
         "Hiller": 3080,
-        "Fisher Boatworks": 3081,
         "Luft-Fahrzeug-Gesellschaft": 3083,
         "LearAvia": 3084,
         "Aviat": 3085,
@@ -2645,7 +2646,6 @@
         "Quickie": 3089,
         "Bücker": 3090,
         "Lockwood": 3091,
-        "Green Sky": 3092,
         "Grob": 3093,
         "Bristell": 3094,
         "Fouga": 3095,
@@ -2718,7 +2718,6 @@
         "Litton Systems": 3175,
         "Hitachi Zosen": 3176,
         "AquaCraft": 3177,
-        "Končar": 3178,
         "Korea Tacoma Marine Industries": 3181,
         "Șantierul Naval Oltenița": 3183,
         "Brooks Locomotive Works": 3185,
@@ -2786,7 +2785,6 @@
         "Wiemann": 3260,
         "Siebel Flugzeugwerke": 3262,
         "Dr Liptak & Co": 3263,
-        "CKD-Siemens-ADtranz": 3264,
         "Astrakhan Shipyard": 3265,
         "CGO": 3266,
         "SCHÖMA": 3267,
@@ -2893,7 +2891,6 @@
         "J.H. van Eijk & Zonen": 3395,
         "Petrozavod": 3396,
         "Krasnoyarsk Shipyard": 3398,
-        "Rauma Repola Uusikaupunki Nystad": 3399,
         "Brodogradilište Tito": 3400,
         "Dzerzhinsky Machine-Building Plant": 3401,
         "Pinsk Shipbuilding-Repair Plant": 3402,
@@ -2960,7 +2957,6 @@
         "Team Titan": 3472,
         "MCD Racing": 3473,
         "Burlak": 3474,
-        "YerAZ": 3476,
         "Corvus": 3477,
         "Blériot-SPAD": 3478,
         "CMC": 3479,
@@ -2993,7 +2989,6 @@
         "Skater": 3520,
         "MG-Lola": 3522,
         "Carminati & Toselli": 3523,
-        "Kampfpanzer": 3525,
         "Rheinmetall-Krupp": 3526,
         "Lycan": 3527,
         "Åkers Krutbruk": 3528,
@@ -3002,7 +2997,6 @@
         "Kelly & Son": 3531,
         "Ryans Rod & Kustom": 3532,
         "Eddie's Rod & Custom": 3533,
-        "DS PZInż": 3534,
         "DEVCOM": 3535,
         "FVRDE": 3536,
         "NRAK": 3537,
@@ -3041,7 +3035,6 @@
         "National": 3582,
         "Potez": 3586,
         "Montesa": 3587,
-        "Österreichische Bundesbahnen": 3588,
         "Qishuyan Locomotive Works": 3590,
         "South African Railways": 3592,
         "Hilding Carlsson": 3593,
@@ -3150,7 +3143,6 @@
         "SEAC": 3727,
         "TARZ": 3728,
         "John I. Thornycroft Ltd.": 3729,
-        "Tank repair shops in Varkaus": 3730,
         "Fordson-Putilovets": 3731,
         "Kawasaki-Kobe Shipyard": 3732,
         "Niigata Engineering": 3736,
@@ -3185,7 +3177,6 @@
         "Bisimoto": 3774,
         "Sedena-Henschel": 3775,
         "Glenn L. Martin Company": 3777,
-        "CCL": 3780,
         "CASA": 3781,
         "ISBI": 3782,
         "Formula": 3784,
@@ -3237,17 +3228,13 @@
         "SVARZ": 3850,
         "Urtrak": 3851,
         "Kalinin": 3852,
-        "Swiss Locomotive Works": 3853,
         "Sony": 3854,
-        "FSC Żuk": 3855,
         "Lordstown": 3857,
-        "ZSD Nysa": 3859,
         "TLD": 3863,
         "Ringhoffer": 3864,
         "Stavostroj": 3865,
         "MSSZ": 3866,
         "Little Giant": 3867,
-        "P&H": 3868,
         "Warnowwerft Warnemünde": 3870,
         "Obuda Hajogyar": 3871,
         "Oka Shipyard": 3872,
@@ -3262,7 +3249,6 @@
         "BenSopra": 3883,
         "Martin Jetpack": 3885,
         "Nuffield Mechanisation and Aero": 3886,
-        "Praktika": 3887,
         "Falcon Boats": 3889,
         "Skeeter": 3890,
         "Lokomotivfabrik der StEG": 3891,
@@ -3281,7 +3267,6 @@
         "Garford": 3940,
         "Brantly": 3943,
         "EMW": 3945,
-        "Nysa": 3950,
         "Brockway-Indiana": 3951,
         "American Austin": 3952,
         "Funko": 3955,
@@ -3301,7 +3286,6 @@
         "Yamanishi": 3985,
         "DAMD": 3986,
         "RouteKS": 3987,
-        "QinetiQ-NA": 3988,
         "Honeywell": 3989,
         "Dynamic Structures": 3994,
         "FNSS Defence Systems": 3996,
@@ -3350,14 +3334,11 @@
         "OKA": 4110,
         "Roanoke Shops": 4114,
         "Grant Locomotive Works": 4117,
-        "Henschel & Sohn": 4118,
         "Mantetsu Shahekou Works": 4119,
         "RKTs Progress": 4120,
         "Khrunichev": 4121,
         "NPO Molniya": 4122,
-        "Meinfesa": 4134,
         "Voith": 4136,
-        "BN": 4137,
         "Mason Machine Works": 4139,
         "National Railway Equipment": 4143,
         "Ransomes & Rapier": 4145,
@@ -3367,9 +3348,7 @@
         "Marshutz and Cantrell": 4155,
         "Stoke Railway Works": 4156,
         "Golden Rock Railway Workshop": 4161,
-        "Macosa": 4167,
         "Gateshead Works": 4173,
-        "Climax Locomotive Works": 4174,
         "A. Goninan and Co.": 4176,
         "JM and I Shops": 4177,
         "Andrew Barclay Sons & Company": 4179,
@@ -3378,7 +3357,6 @@
         "Garrett and Sons": 4182,
         "Fletcher, Jennings & Company": 4183,
         "Panzer": 4184,
-        "Koncar": 4185,
         "ISRO": 4188,
         "Kerr, Stuart & Company": 4192,
         "Yo-Mobile": 4193,
@@ -3421,15 +3399,12 @@
         "Doosan DST": 4304,
         "TUSAŞ": 4305,
         "WZL2": 4310,
-        "Ziyan UAS": 4311,
         "EADS": 4312,
         "Asisguard": 4314,
         "Second Economic Committee": 4315,
-        "HSW SA": 4320,
         "ABB": 4334,
         "Lvtong": 4336,
         "Excar": 4337,
-        "Malyshev Factory": 4344,
         "Rheinmetall Landsysteme": 4346,
         "Kawasaki Shayro": 4361,
         "Softronic": 4362,
@@ -3440,7 +3415,6 @@
         "Deepal": 4375,
         "GAC Mitsubishi": 4377,
         "Scura Motorsport": 4389,
-        "Higgins Industries": 4393,
         "Tokyo Hatsudoki Corporation": 4397,
         "New York Naval Shipyard": 4400,
         "Ishihara Shipbuilding": 4406,
@@ -3480,7 +3454,6 @@
         "Carroll Racing Development": 4487,
         "Caledon Shipbuilding & Engineering": 4488,
         "Great Lakes Engineering Works": 4489,
-        "Shahid Kolah Dooz": 4490,
         "Kärcher": 4512,
         "Eastern Shipbuilding": 4514,
         "Cantieri del Tirreno": 4516,
@@ -3497,7 +3470,7 @@
         "Israel Shipyards": 4532,
         "Shipyard 61": 4533,
         "SibVPKneftegaz": 4534,
-        "Kongsberg": 4535,
+        "KONGSBERG": 4535,
         "Leonardo DRS": 4538,
         "Newport News": 4541,
         "Uffa Fox": 4542,
@@ -3519,17 +3492,14 @@
         "Donut Media": 4575,
         "G-Garage": 4576,
         "Horsepower Techs": 4577,
-        "Fairchild Republic": 4579,
         "Rotem-Toshiba": 4582,
         "Bruce Roberts": 4591,
         "Mikoyan": 4593,
         "Crestliner": 4595,
-        "Northrop–McDonnell Douglas": 4597,
         "Almaz": 4601,
         "Tula": 4602,
         "61 Communards": 4604,
         "Rodriquez": 4607,
-        "Kellison": 4608,
         "Denza": 4609,
         "Baldwin Motorsports": 4611,
         "Spirit Marine": 4613,
@@ -3555,7 +3525,6 @@
         "Wolfe Customs": 4658,
         "Maschinenfabrik Katharinenhütte": 4661,
         "OKB Korchagin": 4662,
-        "PZL-Mielec": 4663,
         "HWA": 4668,
         "Bombardier / Canadair": 4669,
         "RA Florence Works": 4672,
@@ -3574,7 +3543,6 @@
         "Apollo Aircraft": 4697,
         "Arrow Development": 4698,
         "Arsenale di La Spezia": 4699,
-        "Avintia": 4700,
         "Black Sea Shipyard": 4702,
         "Blokken Skipsverft": 4703,
         "Japan Fighter TMS": 4704,
@@ -3594,7 +3562,6 @@
         "DAOD": 4720,
         "De Dietrich Ferroviaire": 4721,
         "Dennis Eagle": 4722,
-        "DTAP": 4723,
         "Deutsch-Bonnet": 4724,
         "DLR": 4725,
         "Dürkopp": 4728,
@@ -3628,7 +3595,6 @@
         "Lifelive Motorsport": 4758,
         "Lockheed Shipbuilding": 4759,
         "Sony Honda Mobility": 4760,
-        "Luftschiffbau": 4761,
         "Luganskteplovoz": 4762,
         "Outspan": 4765,
         "Revellutions": 4766,
@@ -3638,7 +3604,6 @@
         "Mauricia de Tiers": 4770,
         "MB Drilling Company": 4771,
         "MCB": 4773,
-        "Meyers": 4774,
         "MS Aluminium boat": 4775,
         "Murmansk Shipyard": 4776,
         "VNIITransmash": 4777,
@@ -3712,14 +3677,12 @@
         "Northumberland Shipbuilding Co": 4887,
         "American Steel Barge Company": 4889,
         "Submarine Boat Company": 4891,
-        "New York Central": 4893,
         "Revolution Helicopter Corp.": 4894,
         "Vertex": 4895,
         "N-Style": 4896,
         "TEC-ART'S": 4897,
         "Nichiei Racing Goodride": 4900,
         "Tacoma Boatbuilding Company": 4901,
-        "Duro Dakovic": 4903,
         "fifteen52": 4904,
         "G.C. Kuhlman": 4905,
         "Garrett": 4906,
@@ -3757,7 +3720,6 @@
         "ST-Garage": 4964,
         "Tanaka Engineering": 4965,
         "UP GARAGE": 4967,
-        "Avondale Shipyard": 4980,
         "Todd Dry Dock & Construction Co.": 4981,
         "Tianjin FAW": 4985,
         "Tianjin": 4988,
@@ -3766,18 +3728,15 @@
         "Evoluzione": 4991,
         "Huanghe": 4993,
         "Beijing-Jeep": 4995,
-        "JI Case company": 4996,
         "Alstom/CAF": 4998,
         "KNDS": 4999,
         "Sierra Space": 5000,
         "Neolix": 5001,
-        "Robert Allan Ltd": 5002,
         "Hyundai Samho": 5003,
         "Shanxi Hangtian": 5005,
         "Tecno": 5006,
         "A.E. Goodwin": 5007,
         "BRX": 5008,
-        "Kochyerigin": 5011,
         "Schleicher": 5012,
         "Kremer": 5013,
         "Peter Cooper": 5018,
@@ -3790,16 +3749,12 @@
         "Star Trek": 5031,
         "Simon-Duplex": 5034,
         "Nostalgia Hot Rods": 5036,
-        "Lykan": 5037,
         "Baldwin Locomotive Works - Westinghouse": 5038,
         "Alco-Schenectady": 5039,
         "Peckett and Sons": 5040,
-        "GE Genesis": 5041,
         "Banaras Locomotive Works": 5042,
         "Lyudinovsky Locomotive Plant": 5044,
         "JSC Transmashholding": 5045,
-        "Luhansk Locomotive Works": 5046,
-        "Pesa Bydgoszcz": 5047,
         "Voroshilovgrad Locomotive Factory": 5049,
         "AMS Performance": 5052,
         "Pannonia": 5053,
@@ -3809,6 +3764,45 @@
         "IHI Marine United": 5062,
         "IAI-Ramta": 5065,
         "CJ Race Cars": 5066,
+        "Danton Arts Kustoms": 5069,
+        "ČKD-Siemens-ADtranz": 5074,
+        "TAZ Škoda": 5075,
+        "Ferrante Design": 5076,
+        "Hudong-Zhonghua Shipyard": 5077,
+        "KONČAR": 5078,
+        "Practika": 5079,
+        "Rauma Repola": 5080,
+        "Autodelta": 5081,
+        "Fisher Boat Works": 5084,
+        "Panssarikeskuskorjaamo": 5087,
+        "Uzina Mecanică București": 5088,
+        "Yokohama Dock Company": 5089,
+        "Ingenieurskantoor voor Scheepsbouw": 5093,
+        "Avintia Racing": 5094,
+        "MACOSA": 5096,
+        "Meinfesa": 5097,
+        "Eidgenössische Konstruktionswerkstätte": 5098,
+        "Maschinenfabrik Oerlikon": 5099,
+        "Gräf & Stift": 5100,
+        "BBÖ": 5102,
+        "Robert Allan": 5104,
+        "ZIYAN": 5106,
+        "Pražské Benátky": 5107,
+        "VEB Yachtwerft Berlin": 5108,
+        "Kellison": 5109,
+        "Neoteric": 5111,
+        "Waaijenberg": 5112,
+        "Russkaya Mekhanika": 5113,
+        "Carlex Design": 5114,
+        "Apocalypse": 5116,
+        "Vogue": 5117,
+        "HSKRC": 5119,
+        "Green Sky Adventures": 5120,
+        "Northrop-McDonnell Douglas": 5121,
+        "QinetiQ": 5122,
+        "Bergeron Machine Shop": 5123,
+        "Oregon Shipbuilding Corporation": 5124,
+        "K-1": 5126,
     };
 
     // Check if an image URL exists by making a HEAD request
@@ -3868,12 +3862,6 @@
         let textLinkUrl = '';
         let noLogo = false;
         switch(candidate) {
-            case 'Devel':
-                linkUrl = 'https://igcd.net/marque.php?id=Devel&pays=AE';
-                break;
-            case 'A:Level':
-                linkUrl = 'https://igcd.net/marque.php?id=A%3ALevel&pays=RU';
-                break;
             case 'Puma':
                 if(originCountryCode === 'IT') {
                     logoUrl = 'https://igcd.net/logos/Pumait.png';
@@ -3881,10 +3869,8 @@
                 linkUrl = `https://igcd.net/marque.php?id=${encodeURIComponent(candidate)}`;
                 if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
                 break;
-            case 'Şantierul Naval 2 Mai':
-                linkUrl = `https://igcd.net/marque.php?id=%26%23350%3Bantierul+Naval+2+Mai`;
-                textLinkUrl = 'https://igcd.net/search.php?title=antierul+Naval+2+Mai&type=vehicules';
-                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
+            case 'Șantierul Naval Oltenița':
+                textLinkUrl = 'https://igcd.net/search.php?title=antierul+Naval+Olten&type=vehicules';
                 break;
             case 'Đuro Đaković':
                 linkUrl = `https://igcd.net/marque.php?id=%26%23272%3Buro+%26%23272%3Bakovi%26%23263%3B`;
@@ -3894,11 +3880,6 @@
             case 'Konštrukta Trenčín':
                 linkUrl = `https://igcd.net/marque.php?id=Kon%C5%A1trukta+Tren%26%23269%3B%C3%ADn`;
                 textLinkUrl = 'https://igcd.net/search.php?title=Kon%C5%A1trukta&type=vehicules';
-                if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
-                break;
-            case 'Končar':
-                linkUrl = 'https://igcd.net/marque.php?id=Kon%26%23269%3Bar';
-                textLinkUrl = 'https://igcd.net/search.php?title=Kon%26%23269%3Bar&type=vehicules';
                 if(originCountryCode) linkUrl += `&pays=${originCountryCode}`;
                 break;
         }
@@ -3926,7 +3907,7 @@
         let originCountryCode = null;
 
         // Identify origin country
-        const originBoldElement = Array.from(document.querySelectorAll('b')).find(b => b.textContent.includes('Origin:'));
+        const originBoldElement = findBoldUiLabel(['Origin:', 'Origine:']);
         if(originBoldElement && originBoldElement.parentNode) {
             const flagImage = originBoldElement.parentNode.querySelector('img');
             if(flagImage && flagImage.src) {
@@ -4138,7 +4119,11 @@
     const processClickableInfo = () => {
         if (!window.location.href.includes('vehicle.php')) return;
 
-        const searchFields = ['Surname','Chassis','Extra info'];
+        const searchFields = [
+            ['Surname:', 'Surnom:'],
+            ['Chassis:', 'Châssis:'],
+            ['Extra info:', 'Infos supplémentaires:']
+        ];
         const linkStyleClickableInfo = {
             color:'inherit',
             fontFamily:'inherit',
@@ -4148,10 +4133,9 @@
         };
         const allBolds = document.querySelectorAll('b');
 
-        searchFields.forEach(field=>{
-            const searchText = field+':';
+        searchFields.forEach(fieldLabels=>{
             allBolds.forEach(bold=>{
-                if(bold.textContent.includes(searchText)){
+                if(uiLabelStartsWith(bold.textContent, fieldLabels)){
                     let nextSibling = bold.nextSibling;
                     if(nextSibling && nextSibling.nodeType===Node.TEXT_NODE && nextSibling.textContent.trim()){
                         const targetText = nextSibling.textContent.trim();
@@ -4165,7 +4149,7 @@
 
                         words.forEach((word,index)=>{
                             const linkText = accumulated ? `${accumulated} ${word}`.trim() : word;
-                            const searchUrl = `https://igcd.net/search.php?title=${encodeURIComponent(normalizeForSearch(linkText))}&type=vehicules`;
+                            const searchUrl = `https://igcd.net/search.php?title=${normalizeForSearch(linkText)}&type=vehicules`;
                             const link = document.createElement('a');
                             link.href = searchUrl;
                             link.textContent = word;
@@ -4190,7 +4174,7 @@
     const findAndLogCountry = () => {
         if (!window.location.href.includes('vehicle.php')) return;
 
-        const originBold = Array.from(document.querySelectorAll('b')).find(b=>b.textContent.includes('Origin:'));
+        const originBold = findBoldUiLabel(['Origin:', 'Origine:']);
         if(!originBold) return;
         let countryElem=null, countryCode=null, flagImage=null, nextNode=originBold.nextSibling;
 
@@ -4236,7 +4220,10 @@
     // Make Publisher and Developer clickable
     const processGameInfo = () => {
         if (!window.location.href.includes('game.php')) return;
-        const gameFields = ['Publisher', 'Developer'];
+        const gameFields = [
+            ['Publisher:', 'Editeur:'],
+            ['Developer:', 'Développeur:']
+        ];
         const linkStyleClickableInfo = {
             color: 'inherit',
             fontFamily: 'inherit',
@@ -4246,10 +4233,9 @@
         };
         const allBolds = document.querySelectorAll('b');
 
-        gameFields.forEach(field => {
-            const searchText = field + ':';
+        gameFields.forEach(fieldLabels => {
             allBolds.forEach(bold => {
-                if (bold.textContent.includes(searchText)) {
+                if (uiLabelStartsWith(bold.textContent, fieldLabels)) {
                     let nextSibling = bold.nextSibling;
                     if (nextSibling && nextSibling.nodeType === Node.TEXT_NODE && nextSibling.textContent.trim()) {
                         const targetText = nextSibling.textContent.trim();
@@ -4264,8 +4250,9 @@
                         previous = spaceNode;
 
                         words.forEach((word, index) => {
-                            const linkText = accumulated ? `${accumulated} ${word}`.trim() : word;
-                            const searchUrl = `https://igcd.net/search.php?title=${encodeURIComponent(normalizeForSearch(linkText))}&type=jeux`;
+                            const searchTerm = word.replace(/,$/, '');
+                            const linkText = accumulated ? `${accumulated} ${searchTerm}` : searchTerm;
+                            const searchUrl = `https://igcd.net/search.php?title=${encodeURIComponent(linkText)}&type=jeux`;
                             const link = document.createElement('a');
                             link.href = searchUrl;
                             link.textContent = word;
@@ -4273,14 +4260,13 @@
                             parent.insertBefore(link, previous.nextSibling);
                             previous = link;
 
-                            // Add space between words
+                            // Reset the search phrase after each comma
+                            accumulated = word.endsWith(',') ? '' : linkText;
+
                             if (index < words.length - 1) {
-                                accumulated += `${word} `;
                                 const space = document.createTextNode(' ');
                                 parent.insertBefore(space, previous.nextSibling);
                                 previous = space;
-                            } else {
-                                accumulated = linkText;
                             }
                         });
                         if (nextSibling.parentNode) {
@@ -4306,7 +4292,7 @@
         let platformsText = '';
         const allBolds = document.querySelectorAll('b');
         for (let bold of allBolds) {
-            if (bold.textContent.includes('Platforms:')) {
+            if (uiLabelStartsWith(bold.textContent, ['Platforms:', 'Plateformes:'])) {
                 let nextSibling = bold.nextSibling;
                 if (nextSibling && nextSibling.nodeType === Node.TEXT_NODE) {
                     platformsText = nextSibling.textContent.trim();
@@ -4508,17 +4494,101 @@
         dlcBadge.insertAdjacentElement('afterend', dlcContainer);
     };
 
+    // Keep comment columns proportional and prevent long content from widening the page
+    const fixCommentsTableLayout = () => {
+        const pagePath = window.location.pathname;
+        if (!pagePath.includes('vehicle.php') && !pagePath.includes('yourcomments.php')) return;
+
+        const commentsTable = Array.from(document.querySelectorAll('table')).find(table => {
+            const headers = table.rows[0]?.cells;
+            return headers?.length >= 2 &&
+                Array.from(headers).some(cell => uiLabelEquals(cell.textContent, ['Message'])) &&
+                (Array.from(headers).some(cell => uiLabelEquals(cell.textContent, ['Author', 'Auteur'])) ||
+                 Array.from(headers).some(cell => uiLabelEquals(cell.textContent, ['Related page', 'Page liée'])));
+        });
+        if (!commentsTable) return;
+
+        const headerCount = commentsTable.rows[0].cells.length;
+        const columnWidths = headerCount === 3 ? ['10%', '10%', '80%'] : ['15%', '85%'];
+
+        Object.assign(commentsTable.style, {
+            width: '100%',
+            maxWidth: '100%',
+            tableLayout: 'fixed'
+        });
+
+        Array.from(commentsTable.rows).forEach(row => {
+            Array.from(row.cells).forEach((cell, index) => {
+                Object.assign(cell.style, {
+                    width: columnWidths[index] || `${100 / headerCount}%`,
+                    maxWidth: '100%',
+                    overflowWrap: 'anywhere',
+                    wordBreak: 'break-word',
+                    whiteSpace: 'normal',
+                    verticalAlign: 'top'
+                });
+                cell.querySelectorAll('*').forEach(child => {
+                    if (child.tagName === 'IMG') return;
+                    child.style.maxWidth = '100%';
+                    child.style.overflowWrap = 'anywhere';
+                    child.style.whiteSpace = 'normal';
+                });
+                if (uiLabelEquals(commentsTable.rows[0].cells[index]?.textContent || '', ['Message'])) {
+                    cell.querySelectorAll('img').forEach(image => {
+                        Object.assign(image.style, {
+                            maxWidth: '100%',
+                            height: 'auto'
+                        });
+                    });
+                }
+            });
+        });
+    };
+    // Make vehicle picture contributors clickable
+    const processVehicleContributors = () => {
+        if (!window.location.href.includes('vehicle.php')) return;
+
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        const contributorNodes = [];
+        while (walker.nextNode()) {
+            if (/^\s*(?:Contributor|Contributeur):\s*\S/i.test(walker.currentNode.textContent)) {
+                contributorNodes.push(walker.currentNode);
+            }
+        }
+
+        contributorNodes.forEach(node => {
+            const match = node.textContent.match(/^(\s*(?:Contributor|Contributeur):\s*)(.+?)(\s*)$/i);
+            if (!match) return;
+
+            const link = document.createElement('a');
+            link.href = `https://igcd.net/gameslistcontribu.php?id=${encodeURIComponent(match[2])}`;
+            link.textContent = match[2];
+            Object.assign(link.style, {
+                color: 'inherit',
+                fontFamily: 'inherit',
+                fontSize: 'inherit',
+                textDecoration: 'none',
+                cursor: 'pointer'
+            });
+
+            const fragment = document.createDocumentFragment();
+            fragment.appendChild(document.createTextNode(match[1]));
+            fragment.appendChild(link);
+            if (match[3]) fragment.appendChild(document.createTextNode(match[3]));
+            node.parentNode.replaceChild(fragment, node);
+        });
+    };
     // Make contributors clickable
     const processContributors = () => {
         if (!window.location.href.includes('game.php')) return;
 
         // Find the Contributors element
         const allBolds = document.querySelectorAll('b');
-        const contributorsBold = Array.from(allBolds).find(bold =>
-                                                           bold.textContent.includes('Contributors (assigned)') ||
-                                                           bold.textContent.includes('Contributors (page completed)') ||
-                                                           bold.textContent.includes('Contributors (in progress)')
-                                                          );
+        const contributorLabels = [
+            'Contributors (assigned)', 'Contributors (page completed)', 'Contributors (in progress)',
+            'Contributeurs (assigné(s))', 'Contributeurs (page complète)', 'Contributeurs (en cours de progression)'
+        ];
+        const contributorsBold = Array.from(allBolds).find(bold => uiLabelStartsWith(bold.textContent, contributorLabels));
 
         if (!contributorsBold) return;
 
@@ -4529,8 +4599,8 @@
         let namesText = nextSibling.textContent.trim();
         if (!namesText || namesText === '') return;
 
-        // Check "TBD" (not clickable)
-        if (namesText === 'TBD') return;
+        // These translated placeholders are not contributor usernames.
+        if (uiLabelEquals(namesText, ['TBD', 'A déterminer'])) return;
 
         // Split names by commas and trim whitespace
         let names = namesText.split(',').map(name => name.trim()).filter(name => name !== '');
@@ -4576,7 +4646,7 @@
     // Show the game name from the current page title on its cover.
     const addGameCoverTitle = () => {
         if (!window.location.href.includes('vehicle.php')) return;
-        const gameMatch = document.title.match(/^IGCD\.net:\s+.*?\s+in\s+(.+)$/);
+        const gameMatch = document.title.match(/^IGCD\.net:\s+.*?\s+(?:in|dans|en)\s+(.+)$/i);
         if (!gameMatch) return;
         const gameName = gameMatch[1].trim();
         if (!gameName) return;
@@ -4594,4 +4664,6 @@
     addExternalGameLinks();
     processDlcLinks();
     processContributors();
+    processVehicleContributors();
+    fixCommentsTableLayout();
 })();

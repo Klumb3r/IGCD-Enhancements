@@ -87,6 +87,7 @@ These links open searches; they do not confirm that a game or DLC is available o
 
 * Expanded and corrected the built-in make ID table, adding and removing entries to fix misspellings, duplicates, and invalid or outdated makes.
 * Added support for French interface labels on vehicle and game pages.
+* Fixed developer and publisher search links on game pages, including comma-separated names.
 * Made contributor names below vehicle images clickable, linking to their IGCD contributor listings.
 * Adjusted comments table layout so long content wraps without distorting the page.
 

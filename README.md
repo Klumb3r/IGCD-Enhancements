@@ -2,7 +2,7 @@
 
 A [Tampermonkey](https://www.tampermonkey.net/) userscript that adds vehicle make logos, clickable information, and external search links to [IGCD](https://igcd.net/), the Internet Game Cars Database.
 
-**Version:** 3.0 | **Updated:** November 15, 2026 | **Author:** Klumb3r
+**Version:** 3.1 | **Updated:** November 24, 2026 | **Author:** Klumb3r
 
 ## Features
 
@@ -10,6 +10,8 @@ A [Tampermonkey](https://www.tampermonkey.net/) userscript that adds vehicle mak
 * **Make recognition without a logo:** Recognizes makes independently of logo availability, keeping the make and model separate when the make is in the table.
 * **Clickable logo area:** Opens the make's page, respecting the country of origin and supported special cases. If the logo is unavailable, the transparent 100×80 area remains clickable for recognized makes.
 * **Clickable vehicle information:** Adds IGCD search links to the year, make, model, Surname, Chassis, and Extra info.
+* **French interface support:** Recognizes French labels on vehicle and game pages.
+* **Clickable vehicle contributors:** Opens the contributor's IGCD listings from the name displayed below a vehicle image.
 * **Clickable country of origin:** Opens the list of makes from that country.
 * **Clickable game information:** Adds links to developers, publishers, and contributors on game pages.
 * **External game searches:** Adds links to game databases and stores based on the listed platforms.
@@ -46,6 +48,7 @@ The script runs automatically on IGCD vehicle and game pages:
 ```text
 *://*.igcd.net/vehicle.php?id=*
 *://*.igcd.net/game.php?id=*
+*://*.igcd.net/yourcomments.php*
 ```
 
 ### Vehicle pages
@@ -53,6 +56,7 @@ The script runs automatically on IGCD vehicle and game pages:
 * Click the make logo to open the make's page. If a recognized make has no logo, click the empty space to the left of the title.
 * Click the year, make, model, Surname, Chassis, or Extra info to search IGCD.
 * Click the country of origin to browse makes from that country.
+* Click the contributor name below the vehicle image to browse that contributor's IGCD entries.
 * Hover over the make logo area to see the make name.
 * Hover over the game cover to see the game name taken from the page title.
 * Use the external icons to search for the listed DLC, when available.
@@ -78,6 +82,17 @@ Try it on the [1998 Ford Crown Victoria](https://igcd.net/vehicle.php?id=50386).
 These links open searches; they do not confirm that a game or DLC is available on a particular store.
 
 ## Changelog
+
+### Version 3.1 - November 24, 2026
+
+* Expanded and corrected the built-in make ID table, adding and removing entries to fix misspellings, duplicates, and invalid or outdated makes.
+* Added support for French interface labels on vehicle and game pages.
+* Made contributor names below vehicle images clickable, linking to their IGCD contributor listings.
+* Adjusted comments table layout so long content wraps without distorting the page.
+
+### Version 3.0.1 - November 16, 2026
+
+* Added automatic update and download URLs for Tampermonkey.
 
 ### Version 3.0 - November 15, 2026
 
